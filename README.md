@@ -18,6 +18,7 @@
       - [Environment Setup](#environment-setup)
       - [Project Structure](#project-structure)
       - [Project Structure Template](#project-structure-template)
+      - [Requirements.txt \& setup.py](#requirementstxt--setuppy)
 
 ## **Day 01**
 
@@ -194,5 +195,60 @@
   ```
 
 - It will generate [Project Structure](#project-structure) files/folders automatically
+
+[⬆️ Go to Context](#context)
+
+#### Requirements.txt & setup.py
+
+- Update [requirements.txt](./US%20Visa%20Approval%20Prediction/requirements.txt) by adding the following dependencies
+
+  ```txt
+  boto3==1.40.16
+  catboost==1.2.8
+  dill==0.4.0
+  evidently==0.7.12
+  fastapi==0.116.1
+  from-root==1.3.0
+  httptools==0.6.4
+  imbalanced-learn==0.14.0
+  Jinja2==3.1.6
+  mypy-boto3-s3==1.40.0
+  neuro-mf==0.0.5
+  pyarrow==21.0.0
+  pymongo==4.14.1
+  python-dotenv==1.1.1
+  python-multipart==0.0.20
+  seaborn==0.13.2
+  watchfiles==1.1.0
+  websockets==15.0.1
+  xgboost==3.0.4
+  ```
+
+- Now to use folder as module we have added `__init__.py` (*[template.py](template.py) added that while creating all files/folders*)
+- Now using [setup.py](./US%20Visa%20Approval%20Prediction/setup.py) we configure the project so that any folder with `__init__.py` file is treated as a package
+
+  ```py
+  from setuptools import setup, find_packages
+
+  setup(
+      name="us_visa_approval_prediction",
+      version="0.0.1",
+      author="Tansen",
+      author_email="aatansen@gmail.com",
+      packages=find_packages()
+  )
+  ```
+
+- Now add this at the end of the [requirements.txt](./US%20Visa%20Approval%20Prediction/requirements.txt)
+
+  ```sh
+  -e .
+  ```
+
+- Now run this command to install all dependencies
+
+  ```sh
+  pip install -r requirements.txt
+  ```
 
 [⬆️ Go to Context](#context)
