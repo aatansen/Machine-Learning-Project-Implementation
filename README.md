@@ -170,8 +170,7 @@
   │   │   ├── 🐍 artifact_entity.py
   │   │   └── 🐍 config_entity.py
   │   ├── 📁 logger/
-  │   │   ├── 🐍 __init__.py
-  │   │   └── 🐍 logger.py
+  │   │   └── 🐍 __init__.py
   │   ├── 📁 notebooks/
   │   │   └── 📓 exploration.ipynb
   │   ├── 📁 pipeline/
