@@ -139,66 +139,65 @@
 #### Project Structure
 
   ```sh
-  📁 US Visa Approval Prediction/
-  ├── 📁 components/
-  │   ├── 🐍 __init__.py
-  │   ├── 🐍 data_ingestion.py
-  │   ├── 🐍 data_transformation.py
-  │   ├── 🐍 data_validation.py
-  │   ├── 🐍 model_evaluation.py
-  │   ├── 🐍 model_pusher.py
-  │   └── 🐍 model_trainer.py
-  ├── 📁 config/
-  │   ├── ⚙️ model.yaml
-  │   └── ⚙️ schema.yaml
-  ├── 📁 configuration/
-  │   ├── 🐍 __init__.py
-  │   └── 🐍 config.py
-  ├── 📁 constants/
-  │   ├── 🐍 __init__.py
-  │   └── 🐍 constants.py
-  ├── 📁 data/
-  │   ├── 📁 interim/
-  │   │   └── 📄 .gitkeep
-  │   ├── 📁 processed/
-  │   │   └── 📄 .gitkeep
-  │   └── 📁 raw/
-  │       ├── 📄 .gitkeep
-  │       └── 📄 EasyVisa.csv
-  ├── 📁 entity/
-  │   ├── 🐍 __init__.py
-  │   ├── 🐍 artifact_entity.py
-  │   └── 🐍 config_entity.py
-  ├── 📁 logger/
-  │   ├── 🐍 __init__.py
-  │   └── 🐍 logger.py
-  ├── 📁 notebooks/
-  │   └── 📓 exploration.ipynb
-  ├── 📁 pipeline/
-  │   ├── 🐍 __init__.py
-  │   ├── 🐍 prediction_pipeline.py
-  │   └── 🐍 training_pipeline.py
-  ├── 📁 tests/
-  │   ├── 🐍 __init__.py
-  │   ├── 🐍 test_data_ingestion.py
-  │   ├── 🐍 test_data_transformation.py
-  │   └── 🐍 test_model_trainer.py
-  ├── 📁 us_visa_approval_prediction.egg-info/
-  │   ├── 📄 PKG-INFO
-  │   ├── 📄 SOURCES.txt
-  │   ├── 📄 dependency_links.txt
-  │   └── 📄 top_level.txt
-  ├── 📁 utils/
-  │   ├── 🐍 __init__.py
-  │   └── 🐍 main_utils.py
+  ├── 📁 Root Path
+  ├── 📁 US Visa Approval Prediction/
+  │   ├── 📁 components/
+  │   │   ├── 🐍 __init__.py
+  │   │   ├── 🐍 data_ingestion.py
+  │   │   ├── 🐍 data_transformation.py
+  │   │   ├── 🐍 data_validation.py
+  │   │   ├── 🐍 model_evaluation.py
+  │   │   ├── 🐍 model_pusher.py
+  │   │   └── 🐍 model_trainer.py
+  │   ├── 📁 config/
+  │   │   ├── ⚙️ model.yaml
+  │   │   └── ⚙️ schema.yaml
+  │   ├── 📁 configuration/
+  │   │   ├── 🐍 __init__.py
+  │   │   └── 🐍 config.py
+  │   ├── 📁 constants/
+  │   │   ├── 🐍 __init__.py
+  │   │   └── 🐍 constants.py
+  │   ├── 📁 data/
+  │   │   ├── 📁 interim/
+  │   │   │   └── 📄 .gitkeep
+  │   │   ├── 📁 processed/
+  │   │   │   └── 📄 .gitkeep
+  │   │   └── 📁 raw/
+  │   │        └── 📄 .gitkeep
+  │   ├── 📁 entity/
+  │   │   ├── 🐍 __init__.py
+  │   │   ├── 🐍 artifact_entity.py
+  │   │   └── 🐍 config_entity.py
+  │   ├── 📁 logger/
+  │   │   ├── 🐍 __init__.py
+  │   │   └── 🐍 logger.py
+  │   ├── 📁 notebooks/
+  │   │   └── 📓 exploration.ipynb
+  │   ├── 📁 pipeline/
+  │   │   ├── 🐍 __init__.py
+  │   │   ├── 🐍 prediction_pipeline.py
+  │   │   └── 🐍 training_pipeline.py
+  │   ├── 📁 tests/
+  │   │   ├── 🐍 __init__.py
+  │   │   ├── 🐍 test_data_ingestion.py
+  │   │   ├── 🐍 test_data_transformation.py
+  │   │   └── 🐍 test_model_trainer.py
+  │   ├── 📁 utils/
+  │   │   ├── 🐍 __init__.py
+  │   │   └── 🐍 main_utils.py
+  │   └── 🐍 __init__.py
   ├── 📄 .dockerignore
   ├── 🔒 .env
+  ├── 🚫 .gitignore
+  ├── 📄 .python-version
   ├── 🐳 Dockerfile
-  ├── 🐍 __init__.py
+  ├── 📖 README.md
   ├── 🐍 app.py
   ├── 🐍 demo.py
   ├── 📄 requirements.txt
-  └── 🐍 setup.py
+  ├── 🐍 setup.py
+  └── 🐍 template.py
   ```
 
 [⬆️ Go to Context](#context)

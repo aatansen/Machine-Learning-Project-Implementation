@@ -1,8 +1,9 @@
 from pathlib import Path
 import json
+import sys
 
 # Project name
-project_name = "US Visa Approval Prediction"
+project_name = "us_visa_approval_prediction"
 
 # List of all files and directories to create
 files_to_create = [
@@ -54,14 +55,14 @@ files_to_create = [
     f"{project_name}/notebooks/exploration.ipynb",
 
     # --- Application entry points ---
-    f"{project_name}/app.py",
-    f"{project_name}/demo.py",
+    f"app.py",
+    f"demo.py",
 
     # --- Project setup ---
-    f"{project_name}/requirements.txt",
-    f"{project_name}/Dockerfile",
-    f"{project_name}/.dockerignore",
-    f"{project_name}/setup.py",
+    f"requirements.txt",
+    f"Dockerfile",
+    f".dockerignore",
+    f"setup.py",
 
     # --- Config files ---
     f"{project_name}/config/model.yaml",
@@ -73,9 +74,8 @@ files_to_create = [
     f"{project_name}/data/processed/.gitkeep",
 
     # --- Environment file ---
-    f"{project_name}/.env",
+    f".env",
 ]
-
 
 # Create all files and parent directories
 for file_path in files_to_create:
@@ -106,7 +106,7 @@ CONNECTION_URL=
         path.touch()  # empty file for txt, yaml, Dockerfile, .gitkeep, etc.
 
 # Ensure .gitignore contains rules for data & .env
-gitignore_path = Path(f"{project_name}/.gitignore")
+gitignore_path = Path(".gitignore")
 gitignore_rules = """
 # Ignore data files but keep folder structure
 data/*
@@ -136,4 +136,9 @@ build/
 if not gitignore_path.exists() or ".env" not in gitignore_path.read_text():
     gitignore_path.write_text(gitignore_rules.strip())
 
-print(f"Project '{project_name}' structure processed successfully with .env template!")
+# Create .python-version with current Python version
+python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+python_version_path = Path(".python-version")
+python_version_path.write_text(python_version)
+
+print(f"Project '{project_name}' structure processed successfully with .env and .python-version ({python_version})!")
