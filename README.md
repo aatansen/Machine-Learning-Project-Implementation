@@ -19,6 +19,9 @@
       - [Project Structure](#project-structure)
       - [Project Structure Template](#project-structure-template)
       - [Requirements.txt \& setup.py](#requirementstxt--setuppy)
+  - [**Day 02**](#day-02)
+    - [Agenda](#agenda)
+    - [Database Setup](#database-setup)
 
 ## **Day 01**
 
@@ -154,6 +157,14 @@
   ├── 📁 constants/
   │   ├── 🐍 __init__.py
   │   └── 🐍 constants.py
+  ├── 📁 data/
+  │   ├── 📁 interim/
+  │   │   └── 📄 .gitkeep
+  │   ├── 📁 processed/
+  │   │   └── 📄 .gitkeep
+  │   └── 📁 raw/
+  │       ├── 📄 .gitkeep
+  │       └── 📄 EasyVisa.csv
   ├── 📁 entity/
   │   ├── 🐍 __init__.py
   │   ├── 🐍 artifact_entity.py
@@ -172,10 +183,16 @@
   │   ├── 🐍 test_data_ingestion.py
   │   ├── 🐍 test_data_transformation.py
   │   └── 🐍 test_model_trainer.py
+  ├── 📁 us_visa_approval_prediction.egg-info/
+  │   ├── 📄 PKG-INFO
+  │   ├── 📄 SOURCES.txt
+  │   ├── 📄 dependency_links.txt
+  │   └── 📄 top_level.txt
   ├── 📁 utils/
   │   ├── 🐍 __init__.py
   │   └── 🐍 main_utils.py
   ├── 📄 .dockerignore
+  ├── 🔒 .env
   ├── 🐳 Dockerfile
   ├── 🐍 __init__.py
   ├── 🐍 app.py
@@ -249,6 +266,99 @@
 
   ```sh
   pip install -r requirements.txt
+  ```
+
+[⬆️ Go to Context](#context)
+
+## **Day 02**
+
+### Agenda
+
+- Database setup (MongoDB Atlas)
+- Logging Module
+- Exception Module
+- Utility Module
+
+[⬆️ Go to Context](#context)
+
+### Database Setup
+
+- Create [MongoDB Account](https://account.mongodb.com/account/register)
+- Create New project
+- Create cluster and database user
+- Get driver code of relevant python version (*I used Stable API:  `3.12 or later`*)
+- Get the dataset from Kaggle: [EasyVisa_Dataset](https://www.kaggle.com/datasets/moro23/easyvisa-dataset)
+- Using pandas to load the data and do some preprocessing & others check in notebook [exploration.ipynb](./US%20Visa%20Approval%20Prediction/notebooks/exploration.ipynb)
+- To save data in MongoDB we have to convert the data into dictionary
+
+  ```py
+  data=df.to_dict(orient='records')
+  ```
+
+- Add Config in [.env](./US%20Visa%20Approval%20Prediction/.env)
+
+- MongoDB settings
+
+  ```py
+  # Get values from environment
+  DB_NAME = os.getenv("DB_NAME")
+  COLLECTION_NAME = os.getenv("COLLECTION_NAME")
+  CONNECTION_URL = os.getenv("CONNECTION_URL")
+  ```
+
+- Insert the converted dictionary data in MongoDB
+
+  ```py
+  import pymongo
+  client = pymongo.MongoClient(CONNECTION_URL)
+  data_base = client[DB_NAME]
+  collection = data_base[COLLECTION_NAME]
+  ```
+
+- Now insert data
+
+  ```py
+  records = collection.insert_many(data)
+  ```
+
+- If data insert failed due to `timeout error` use `certifi`
+
+  ```py
+  import certifi
+  client = pymongo.MongoClient(CONNECTION_URL,tlsCAFile=certifi.where())
+  ```
+
+  > [!NOTE]
+  >
+  > As I am using latest version and I did not get any error related to `timeout`
+  >
+  > If still error persists use different stable version of `pymongo` (e.g: `pymongo>=4.7`)
+
+- Ingest data from MongoDB
+
+  ```py
+  records = collection.find().limit(5)
+  for i,j in enumerate(records):
+    print(f"{i}: {j}")
+  ```
+
+  > [!NOTE]
+  > In the notebook we can see records output is `cursor object`.
+  >
+  > A `cursor object` is a `forward-only`, `lazy-loading` iterator returned by `MongoDB` queries (like `find()`), which acts as a pointer to the query results on the server and streams documents in batches until exhausted.It Exhausted after full iteration. Can be converted to list with list(cursor). More memory-efficient than lists. Requires new query to reuse.
+
+- Cursor Object to DataFrame
+
+  ```py
+  df = pd.DataFrame(list(collection.find()))
+  ```
+
+- Dropping `MongoDB`'s `_id` from column
+
+  ```py
+  if '_id' in df.columns.to_list():
+      df.drop(columns=['_id'], inplace=True)
+  df.head()
   ```
 
 [⬆️ Go to Context](#context)

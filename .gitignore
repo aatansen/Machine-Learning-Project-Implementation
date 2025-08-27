@@ -1,3 +1,24 @@
+# Ignore data files but keep folder structure
+data/*
+!data/**/.gitkeep
+*.csv
+
+# Ignore environment files
+.env
+
+# Python common ignores
 .vscode
 venv/
-*.egg-info
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+.env
+.venv
+*.egg-info/
+dist/
+build/
+.ipynb_checkpoints/
