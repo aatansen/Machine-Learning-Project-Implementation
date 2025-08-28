@@ -22,6 +22,13 @@
   - [**Day 02**](#day-02)
     - [Agenda](#agenda)
     - [Database Setup](#database-setup)
+      - [MongoDB settings](#mongodb-settings)
+      - [Insert Data to MongoDB](#insert-data-to-mongodb)
+      - [Ingest Data from MongoDB](#ingest-data-from-mongodb)
+    - [Project Utility](#project-utility)
+      - [Logging Functionality](#logging-functionality)
+      - [Exception handling](#exception-handling)
+      - [Utility functions / Commonly used functions](#utility-functions--commonly-used-functions)
 
 ## **Day 01**
 
@@ -293,9 +300,11 @@
   data=df.to_dict(orient='records')
   ```
 
-- Add Config in [.env](./US%20Visa%20Approval%20Prediction/.env)
+[⬆️ Go to Context](#context)
 
-- MongoDB settings
+#### MongoDB settings
+
+- Add Config in [.env](./US%20Visa%20Approval%20Prediction/.env)
 
   ```py
   # Get values from environment
@@ -313,7 +322,11 @@
   collection = data_base[COLLECTION_NAME]
   ```
 
-- Now insert data
+[⬆️ Go to Context](#context)
+
+#### Insert Data to MongoDB
+
+- Insert data
 
   ```py
   records = collection.insert_many(data)
@@ -332,7 +345,11 @@
   >
   > If still error persists use different stable version of `pymongo` (e.g: `pymongo>=4.7`)
 
-- Ingest data from MongoDB
+[⬆️ Go to Context](#context)
+
+#### Ingest Data from MongoDB
+
+- Ingest data
 
   ```py
   records = collection.find().limit(5)
@@ -358,5 +375,33 @@
       df.drop(columns=['_id'], inplace=True)
   df.head()
   ```
+
+[⬆️ Go to Context](#context)
+
+### Project Utility
+
+- Logging functionality
+- Exception handling
+- Utility functions / Commonly used functions (e.g: YAML file read in any places)
+
+[⬆️ Go to Context](#context)
+
+#### Logging Functionality
+
+- Edit [logger `__init__.py`](./us_visa_approval_prediction/logger/__init__.py) file to save logs
+- Test it in [demo.py](./demo.py)
+
+[⬆️ Go to Context](#context)
+
+#### Exception handling
+
+- Edit [exception `__init__.py`](./us_visa_approval_prediction/exception/__init__.py) file to show properly formatted error message by custom exception
+- Test it in [demo.py](./demo.py)
+
+[⬆️ Go to Context](#context)
+
+#### Utility functions / Commonly used functions
+
+- Edit utils [main_utils.py](./us_visa_approval_prediction/utils/main_utils.py) here we defined all the commonly used functions
 
 [⬆️ Go to Context](#context)

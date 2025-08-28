@@ -35,6 +35,9 @@ files_to_create = [
     # --- Logging ---
     f"{project_name}/logger/__init__.py",
 
+    # --- Exception ---
+    f"{project_name}/exception/__init__.py",
+
     # --- Pipelines ---
     f"{project_name}/pipeline/__init__.py",
     f"{project_name}/pipeline/training_pipeline.py",
