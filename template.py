@@ -133,6 +133,7 @@ __pycache__/
 dist/
 build/
 .ipynb_checkpoints/
+catboost_info/
 """
 
 if not gitignore_path.exists() or ".env" not in gitignore_path.read_text():

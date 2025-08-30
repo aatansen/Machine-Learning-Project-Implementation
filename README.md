@@ -29,6 +29,22 @@
       - [Logging Functionality](#logging-functionality)
       - [Exception handling](#exception-handling)
       - [Utility functions / Commonly used functions](#utility-functions--commonly-used-functions)
+  - [**Day 03**](#day-03)
+    - [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)
+      - [Types of Analysis in EDA](#types-of-analysis-in-eda)
+      - [Types of Variables in EDA](#types-of-variables-in-eda)
+      - [Multicollinearity In EDA](#multicollinearity-in-eda)
+    - [Feature Engineering](#feature-engineering)
+      - [Feature Extraction](#feature-extraction)
+      - [Feature Transform](#feature-transform)
+      - [Skewness and Outlier](#skewness-and-outlier)
+      - [Column Transformation for Categorical Values](#column-transformation-for-categorical-values)
+      - [Handling Imbalanced Data](#handling-imbalanced-data)
+    - [Model Training](#model-training)
+      - [Train-Test Split](#train-test-split)
+      - [List of Models](#list-of-models)
+      - [Hyperparameter Tuning](#hyperparameter-tuning)
+      - [Final Report](#final-report)
 
 ## **Day 01**
 
@@ -403,5 +419,278 @@
 #### Utility functions / Commonly used functions
 
 - Edit utils [main_utils.py](./us_visa_approval_prediction/utils/main_utils.py) here we defined all the commonly used functions
+
+[⬆️ Go to Context](#context)
+
+## **Day 03**
+
+### Exploratory Data Analysis (EDA)
+
+- Full EDA can be found in [02_eda_us_visa.ipynb](./us_visa_approval_prediction/notebooks/02_eda_us_visa.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
+
+[⬆️ Go to Context](#context)
+
+#### Types of Analysis in EDA
+
+- Univariate Analysis
+  - “What does this single column look like?”
+  - Look at one feature alone → Age distribution, Visa approval %
+
+- Bivariate Analysis
+  - “How does one column affect another?”
+  - Look at two features together → Age vs Visa Status
+- Multivariate Analysis
+  - “How do many columns work together?”
+  - Look at many features together → Age + Education + Country → Visa Status
+
+[⬆️ Go to Context](#context)
+
+#### Types of Variables in EDA
+
+- Discrete Variables
+  - “Countable steps or categories”
+  - Whole numbers, few unique values → Visa Status (Approved/Denied), Education (Bachelor/Master/PhD)
+
+- Continuous Variables
+  - “Smooth measurements, can take decimals”
+  - Measured values, many unique values → Age, Income, Years of Experience
+
+More Variables:
+
+- Categorical Variables
+  - Represent categories or labels, not numbers
+  - Can be nominal (no order) or ordinal (ordered)
+  - Examples: Country, Gender, Education Level
+
+- Binary Variables
+  - Special case of categorical variables with only two categories
+  - Examples: Yes/No, True/False, Approved/Denied
+
+- Date/Time Variables
+  - Represent time-related information, can be transformed into numeric features
+  - Examples: Application Date, Visa Issue Date
+
+- Text Variables
+  - Unstructured textual data, can be converted into features using NLP techniques
+  - Examples: Job Description, Applicant Remarks
+
+[⬆️ Go to Context](#context)
+
+#### Multicollinearity In EDA
+
+- Definition
+  - “When two or more independent variables are highly correlated with each other”
+  - Means they provide duplicate information instead of unique insight
+
+- Why It Matters
+  - Makes it hard to understand which feature actually influences the target
+  - Can cause instability in regression models
+
+- Detection Methods (Numeric)
+  - Correlation heatmap → Check if correlation > 0.8 or < -0.8 between features
+  - Variance Inflation Factor (VIF) → VIF > 10 usually indicates high multicollinearity
+
+- Detection Methods (Categorical)
+  - Cramér’s V → Measures strength of association between two categorical variables (0–1 scale)
+  - Chi-square (χ²) Test → Low p-value (<0.05) indicates dependence between categorical variables
+
+[⬆️ Go to Context](#context)
+
+### Feature Engineering
+
+- **Definition:**
+  Feature Engineering is the process of creating, transforming, or selecting features (variables) from raw data to improve the performance of machine learning models. It helps the model better capture patterns, relationships, and trends in the data.
+
+- **Key Objectives:**
+  - Make raw data more suitable for modeling
+  - Handle missing values, outliers, and skewed distributions
+  - Transform categorical variables into numerical formats
+  - Create new features that capture important patterns or relationships
+
+- **Common Techniques:**
+  - **Feature Extraction:** Creating new features from existing data (e.g., extracting year from a date, calculating ratios)
+  - **Feature Transformation:** Scaling, normalizing, or transforming features (e.g., log transform, Yeo-Johnson transform)
+  - **Feature Encoding:** Converting categorical variables to numeric (Label Encoding, Ordinal Encoding, One-Hot Encoding)
+  - **Handling Imbalanced Data:** Techniques like SMOTE to balance classes
+
+[⬆️ Go to Context](#context)
+
+#### Feature Extraction
+
+- Creating new features from existing data to capture important patterns
+- Examples:
+  - Extracting "year" and "month" from a datetime column
+  - Counting number of previous visa applications per applicant
+  - Generating ratios, differences, or aggregations from numeric features
+
+[⬆️ Go to Context](#context)
+
+#### Feature Transform
+
+- Transforming features to improve distribution, handle outliers, or scale data
+- Examples:
+  - Log transformation → reduces right skew
+  - Yeo-Johnson transformation → handles skewness and outliers for positive and negative values
+  - Standardization (z-score) → mean=0, std=1
+  - Min-Max scaling → scales features to [0,1] range
+
+[⬆️ Go to Context](#context)
+
+#### Skewness and Outlier
+
+- Skewness refers to a distortion or asymmetry that deviates from a normal distribution (bell curve)
+- Positive (right) skew → tail on the right, mean > median, may indicate extreme high values (outliers)
+- Negative (left) skew → tail on the left, mean < median, may indicate extreme low values (outliers)
+- A normal distribution has skewness = 0
+- Skewed columns (e.g., number of employees, company age) may need transformation
+- Power transforms (Box-Cox or Yeo-Johnson) can make skewed data more Gaussian-like
+- Useful for addressing heteroscedasticity or modeling assumptions where normality is desired
+- Skewness can act as a **red flag for potential outliers**, but visual confirmation with boxplots or histograms is recommended
+
+[⬆️ Go to Context](#context)
+
+#### Column Transformation for Categorical Values
+
+- In machine learning, categorical variables need to be converted into numeric format for models to process them effectively.
+
+- **Label Encoding**
+  - Assigns a unique integer to each category
+  - Suitable when no ordinal relationship exists, but watch out: it may imply a false ordering
+  - Example:
+
+    ```py
+    Colors = ['Red', 'Green', 'Blue', 'Red', 'Green']
+    LabelEncoder → [2, 1, 0, 2, 1]
+    ```
+
+  - Pros: Simple, compact representation
+  - Cons: Implies ordinal relationship which may not exist
+
+  - **Ordinal Encoding**
+    - Preserves an explicit order among categories
+    - Suitable for ordinal variables like education level, rating, or size
+    - Example:
+
+      ```py
+      Education = ['High School', 'Bachelor', 'Master', 'Ph.D.']
+      OrdinalEncoder → [[0], [1], [2], [3]]
+      ```
+
+    - Pros: Maintains order information
+    - Cons: Assumes linear order; may not capture non-linear relationships
+
+  - **One-Hot Encoding**
+    - Converts each category into a binary vector (1 for presence, 0 for absence)
+    - Avoids introducing ordinal relationships
+    - Example:
+
+      ```py
+      Fruit = ['Apple', 'Banana', 'Orange', 'Apple', 'Banana']
+      pd.get_dummies →
+         Fruit_Apple  Fruit_Banana  Fruit_Orange
+         1            0             0
+         0            1             0
+         0            0             1
+         1            0             0
+         0            1             0
+      ```
+
+    - Pros: No false ordinal relationships
+    - Cons: Can lead to high-dimensional feature space with many categories
+
+  - **Conclusion**
+    - Choose encoding based on data type and model requirements:
+      - Label Encoding → simple, may imply order
+      - Ordinal Encoding → preserves natural order
+      - One-Hot Encoding → avoids order but increases dimensions
+
+[⬆️ Go to Context](#context)
+
+#### Handling Imbalanced Data
+
+- Imbalanced datasets occur when one class has significantly more samples than another, which can bias model training.
+
+- **Upsampling (Over-sampling)**
+  - Increase the number of samples in the minority class by **duplicating existing samples** or creating synthetic ones
+  - Example: If class A has 1000 samples and class B has 100, duplicate class B samples to reach 1000
+
+- **Downsampling (Under-sampling)**
+  - Reduce the number of samples in the majority class to match the minority class
+  - Example: If class A has 1000 samples and class B has 100, randomly remove samples from class A to reach 100
+
+- **SMOTE (Synthetic Minority Over-sampling Technique)**
+  - Generates synthetic samples for the minority class to balance the dataset
+  - Works by creating new instances along the line segments between existing minority samples
+  - Helps improve model performance on minority class predictions
+  - Example usage:
+
+    ```py
+    from imblearn.over_sampling import SMOTE
+
+    smote = SMOTE()
+    X_resampled, y_resampled = smote.fit_resample(X, y)
+    ```
+
+- Other techniques:
+  - Undersampling the majority class
+  - Combining over- and under-sampling
+  - Using class-weighted algorithms
+
+[⬆️ Go to Context](#context)
+
+### Model Training
+
+#### Train-Test Split
+
+- Before training models, the dataset is split into **training set** and **testing set**
+  - Training set → used to train the model
+  - Testing set → used to evaluate model performance on unseen data
+- Common split ratio: 70:30 or 80:20
+
+#### List of Models
+
+- Multiple models are trained to compare their performance on the dataset.
+  - **Random Forest Classifier** → ensemble of decision trees, good for handling non-linear relationships
+  - **Decision Tree Classifier** → simple interpretable tree-based model
+  - **Gradient Boosting Classifier** → sequential ensemble boosting method
+  - **Logistic Regression** → linear model for binary classification
+  - **K-Nearest Neighbors (KNN) Classifier** → distance-based model, predicts based on neighbors
+  - **XGBoost Classifier** → efficient gradient boosting implementation
+  - **CatBoost Classifier** → gradient boosting with categorical feature support
+  - **Support Vector Classifier (SVC)** → finds optimal hyperplane to separate classes
+  - **AdaBoost Classifier** → ensemble boosting using weighted trees
+
+- **Initial Model Results:**
+
+  | Model Name                | Accuracy |
+  | ------------------------- | -------- |
+  | Random Forest             | 0.9528   |
+  | K-Neighbors Classifier    | 0.9416   |
+  | XGBClassifier             | 0.9352   |
+  | Decision Tree             | 0.9269   |
+  | CatBoosting Classifier    | 0.9261   |
+  | Gradient Boosting         | 0.8791   |
+  | Support Vector Classifier | 0.8571   |
+  | AdaBoost Classifier       | 0.8492   |
+  | Logistic Regression       | 0.7256   |
+
+#### Hyperparameter Tuning
+
+- Process of fine-tuning model parameters to improve performance
+- Focus on the top-performing models: K-Nearest Neighbors, Random Forest, and XGBClassifier
+- Retrain these models using their best-found parameters to maximize accuracy and generalization
+
+- **Tuned Results:**
+
+  | Model Name               | Accuracy |
+  | ------------------------ | -------- |
+  | KNeighborsClassifier     | 0.9683   |
+  | Random Forest Classifier | 0.9528   |
+  | XGBClassifier            | 0.9457   |
+
+#### Final Report
+
+- **Best Model:** K-Nearest Neighbors (KNN)
+- **Accuracy:** 96.83%
 
 [⬆️ Go to Context](#context)
