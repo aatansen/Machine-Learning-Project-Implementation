@@ -5,7 +5,7 @@
 # **Context**
 - [**Context**](#context)
   - [**Day 01**](#day-01)
-    - [Project 01: US Visa Approval Prediction](#project-01-us-visa-approval-prediction)
+    - [Project: US Visa Approval Prediction](#project-us-visa-approval-prediction)
     - [Requirements](#requirements)
     - [Project Overview](#project-overview)
     - [Deployment](#deployment)
@@ -45,10 +45,20 @@
       - [List of Models](#list-of-models)
       - [Hyperparameter Tuning](#hyperparameter-tuning)
       - [Final Report](#final-report)
+  - [**Day 04**](#day-04)
+    - [Project Documentation](#project-documentation)
+      - [Wireframe](#wireframe)
+      - [HLD - High Level Design](#hld---high-level-design)
+      - [LLD - Low Level Design](#lld---low-level-design)
+    - [Project Management](#project-management)
+      - [Jira](#jira)
+      - [Agile Project Management](#agile-project-management)
+      - [Work Types in Agile Boards](#work-types-in-agile-boards)
+      - [Work Types Visualize](#work-types-visualize)
 
 ## **Day 01**
 
-### Project 01: US Visa Approval Prediction
+### Project: US Visa Approval Prediction
 
 ### Requirements
 
@@ -647,6 +657,8 @@ More Variables:
   - Testing set → used to evaluate model performance on unseen data
 - Common split ratio: 70:30 or 80:20
 
+[⬆️ Go to Context](#context)
+
 #### List of Models
 
 - Multiple models are trained to compare their performance on the dataset.
@@ -688,9 +700,158 @@ More Variables:
   | Random Forest Classifier | 0.9528   |
   | XGBClassifier            | 0.9457   |
 
+[⬆️ Go to Context](#context)
+
 #### Final Report
 
 - **Best Model:** K-Nearest Neighbors (KNN)
 - **Accuracy:** 96.83%
+
+[⬆️ Go to Context](#context)
+
+## **Day 04**
+
+### Project Documentation
+
+#### Wireframe
+
+- A wireframe is a basic, low-fidelity visual representation of a digital product’s layout.
+- Focuses on structure and functionality, not final design.
+
+  > US Visa Approval Prediction Wireframe is located inside [documents](./documents/) directory [01_Wireframe.md](./documents/01_Wireframe.md)
+
+[⬆️ Go to Context](#context)
+
+#### HLD - High Level Design
+
+- Describes the system architecture and major components.
+- Provides an overview of modules, data flow, and interactions.
+- Used to understand the big picture before diving into details.
+
+  > US Visa Approval Prediction HLD is located inside [documents](./documents/) directory [02_HLD.md](./documents/02_HLD.md)
+
+[⬆️ Go to Context](#context)
+
+#### LLD - Low Level Design
+
+- Provides detailed design of each component/module.
+- Specifies logic, database schema, APIs, and algorithms.
+- Acts as a blueprint for developers to implement the system.
+
+  > US Visa Approval Prediction LLD is located inside [documents](./documents/) directory [03_LLD.md](./documents/03_LLD.md)
+
+[⬆️ Go to Context](#context)
+
+### Project Management
+
+#### Jira
+
+- [Jira by Atlassian](https://www.atlassian.com/software/jira)
+- Project management involves planning, organizing, and monitoring a project to achieve specific goals on time and within budget.
+
+[⬆️ Go to Context](#context)
+
+#### Agile Project Management
+
+- Agile is an iterative approach to project management and software development.
+- Focuses on flexibility, collaboration, and delivering small, incremental improvements.
+- Uses short cycles called **sprints** to complete tasks and review progress regularly.
+- Key principles include customer collaboration, adaptive planning, and continuous improvement.
+- **Scrum** is a popular framework within Agile that provides structure through defined roles, events, and artifacts to implement Agile principles effectively.
+- **Kanban Board** is another Agile tool used to visualize work, limit work in progress, and optimize flow.
+  - Tasks are represented as cards on a board with columns like *To Do*, *In Progress*, and *Done*.
+  - Helps teams see bottlenecks, prioritize tasks, and improve efficiency.
+  - Unlike Scrum, Kanban is continuous and does not require fixed-length sprints.
+
+- Key steps in project management:
+
+  1. **Initiation**
+     - Define project scope, objectives, and stakeholders.
+     - Identify feasibility, risks, and resources required.
+
+  2. **Planning**
+     - Create a detailed project plan with tasks, timelines, and milestones.
+     - Assign responsibilities and allocate resources.
+     - Identify dependencies and risks.
+
+  3. **Execution**
+     - Carry out the project plan by developing deliverables.
+     - Track progress and ensure team collaboration.
+     - Communicate updates to stakeholders.
+
+  4. **Monitoring & Controlling**
+     - Track performance against the plan (time, cost, quality).
+     - Manage changes, risks, and issues.
+     - Ensure project stays on track and meets objectives.
+
+  5. **Closure**
+     - Deliver the final product or service.
+     - Conduct project review and document lessons learned.
+     - Release resources and formally close the project.
+
+- Jira Alternative
+  - [Trello](https://trello.com/)
+  - [Asana](https://asana.com/)
+  - [ClickUp](https://clickup.com/)
+  - [Microsoft Project](https://www.microsoft.com/en-us/microsoft-365/p/project-professional-2024/cfq7ttc0ph40)
+
+[⬆️ Go to Context](#context)
+
+#### Work Types in Agile Boards
+
+Big abstract View of Work which then gets broken down in several smaller Tasks called User Stories. Work items are categorized into different types to organize and track progress effectively:
+
+- **Epic**
+  - Represents a large body of work that can be broken down into multiple stories or tasks.
+  - Often spans multiple sprints or releases.
+  - Used to capture high-level features or initiatives.
+
+- **Story**
+  - Represents a user-focused feature or requirement.
+  - Typically fits within a single sprint.
+  - Written from the user perspective, e.g., “As a user, I want to … so that …”.
+
+- **Task**
+  - Actual Tasks that have to be completed by your Team for the
+  success of the User Story.
+  - A smaller, actionable unit of work, often part of a story or epic.
+  - Represents work that a team member can complete within a sprint.
+  - Focused on implementation details or development work.
+
+- **Bug**
+  - Represents a defect or issue in the product that needs fixing.
+  - Can be prioritized and assigned like tasks or stories.
+  - Helps track software quality and ensure issues are resolved promptly.
+
+[⬆️ Go to Context](#context)
+
+#### Work Types Visualize
+
+  ```mermaid
+  graph LR
+      Epic["Epic: User Authentication"]
+
+      Story1["Story: User Login"]
+      Story2["Story: User Registration"]
+
+      Task1["Task: Design login UI"]
+      Task2["Task: Implement login API"]
+      Bug1["Bug: Login button not clickable"]
+
+      Task3["Task: Design registration UI"]
+      Task4["Task: Implement registration API"]
+      Bug2["Bug: Email validation fails"]
+
+      Epic --> Story1
+      Epic --> Story2
+
+      Story1 --> Task1
+      Story1 --> Task2
+      Story1 --- Bug1
+
+      Story2 --> Task3
+      Story2 --> Task4
+    Story2 --- Bug2
+  ```
 
 [⬆️ Go to Context](#context)
