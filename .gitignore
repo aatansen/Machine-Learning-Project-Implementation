@@ -23,3 +23,4 @@ dist/
 build/
 .ipynb_checkpoints/
 catboost_info/
+artifact/

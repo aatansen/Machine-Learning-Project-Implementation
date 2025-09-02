@@ -55,6 +55,18 @@
       - [Agile Project Management](#agile-project-management)
       - [Work Types in Agile Boards](#work-types-in-agile-boards)
       - [Work Types Visualize](#work-types-visualize)
+  - [**Day 05 - Data Ingestion Component Implementation**](#day-05---data-ingestion-component-implementation)
+    - [ML Linear Pipeline](#ml-linear-pipeline)
+    - [Data Ingestion Flowchart](#data-ingestion-flowchart)
+      - [Data Ingestion Config](#data-ingestion-config)
+      - [Database (MongoDB)](#database-mongodb)
+      - [Initiate Data Ingestion](#initiate-data-ingestion)
+      - [Export Data to Feature Store](#export-data-to-feature-store)
+      - [Split Data as Train and Test](#split-data-as-train-and-test)
+      - [Data Ingestion Artifact](#data-ingestion-artifact)
+      - [Feature Store](#feature-store)
+      - [Output Files](#output-files)
+    - [Workflow](#workflow)
 
 ## **Day 01 - Project Introduction & Setup**
 
@@ -173,6 +185,8 @@
 
   ```sh
   ├── 📁 Root Path
+  ├── 📁 documents/
+  │   └── 📄 .gitkeep
   ├── 📁 US Visa Approval Prediction/
   │   ├── 📁 components/
   │   │   ├── 🐍 __init__.py
@@ -187,10 +201,9 @@
   │   │   └── ⚙️ schema.yaml
   │   ├── 📁 configuration/
   │   │   ├── 🐍 __init__.py
-  │   │   └── 🐍 config.py
+  │   │   └── 🐍 db_connection.py
   │   ├── 📁 constants/
-  │   │   ├── 🐍 __init__.py
-  │   │   └── 🐍 constants.py
+  │   │   └── 🐍 __init__.py
   │   ├── 📁 data/
   │   │   ├── 📁 interim/
   │   │   │   └── 📄 .gitkeep
@@ -198,6 +211,9 @@
   │   │   │   └── 📄 .gitkeep
   │   │   └── 📁 raw/
   │   │        └── 📄 .gitkeep
+  │   ├── 📁 data_access/
+  │   │   ├── 🐍 __init__.py
+  │   │   └── 🐍 data.py
   │   ├── 📁 entity/
   │   │   ├── 🐍 __init__.py
   │   │   ├── 🐍 artifact_entity.py
@@ -205,7 +221,9 @@
   │   ├── 📁 logger/
   │   │   └── 🐍 __init__.py
   │   ├── 📁 notebooks/
-  │   │   └── 📓 exploration.ipynb
+  │   │   ├── 📓 01_exploration.ipynb
+  │   │   ├── 📓 02_eda.ipynb
+  │   │   └── 📓 03_feature_engineering_and_model_training.ipynb
   │   ├── 📁 pipeline/
   │   │   ├── 🐍 __init__.py
   │   │   ├── 🐍 prediction_pipeline.py
@@ -214,7 +232,9 @@
   │   │   ├── 🐍 __init__.py
   │   │   ├── 🐍 test_data_ingestion.py
   │   │   ├── 🐍 test_data_transformation.py
-  │   │   └── 🐍 test_model_trainer.py
+  │   │   ├── 🐍 test_db_connection.py
+  │   │   ├── 🐍 test_model_trainer.py
+  │   │   └── 🐍 test_training_pipeline.py
   │   ├── 📁 utils/
   │   │   ├── 🐍 __init__.py
   │   │   └── 🐍 main_utils.py
@@ -303,6 +323,8 @@
 
 ## **Day 02 - Database Setup & Project Utility**
 
+- **Notebook**: [01_exploration_and_db_setup.ipynb](./us_visa_approval_prediction/notebooks/01_exploration_and_db_setup.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
+
 ### Agenda
 
 - Database setup (MongoDB Atlas)
@@ -330,7 +352,7 @@
 
 #### MongoDB settings
 
-- Add Config in [.env](./US%20Visa%20Approval%20Prediction/.env)
+- Add Config in [.env](/.env)
 
   ```py
   # Get values from environment
@@ -436,7 +458,7 @@
 
 ### Exploratory Data Analysis (EDA)
 
-- Full EDA can be found in [02_eda_us_visa.ipynb](./us_visa_approval_prediction/notebooks/02_eda_us_visa.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
+- **Notebook**: [02_eda_us_visa.ipynb](./us_visa_approval_prediction/notebooks/02_eda_us_visa.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
 
 [⬆️ Go to Context](#context)
 
@@ -507,6 +529,8 @@ More Variables:
 [⬆️ Go to Context](#context)
 
 ### Feature Engineering
+
+- **Notebook**: [03_feature_engineering_and_model_training.ipynb](./us_visa_approval_prediction/notebooks/03_feature_engineering_and_model_training.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
 
 - **Definition:**
   Feature Engineering is the process of creating, transforming, or selecting features (variables) from raw data to improve the performance of machine learning models. It helps the model better capture patterns, relationships, and trends in the data.
@@ -649,6 +673,8 @@ More Variables:
 [⬆️ Go to Context](#context)
 
 ### Model Training
+
+- **Notebook**: [03_feature_engineering_and_model_training.ipynb](./us_visa_approval_prediction/notebooks/03_feature_engineering_and_model_training.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
 
 #### Train-Test Split
 
@@ -853,5 +879,156 @@ Big abstract View of Work which then gets broken down in several smaller Tasks c
       Story2 --> Task4
     Story2 --- Bug2
   ```
+
+[⬆️ Go to Context](#context)
+
+## **Day 05 - Data Ingestion Component Implementation**
+
+### ML Linear Pipeline
+
+- Linear Pipeline
+  - Data Ingestion
+  - Data validation
+  - Data transformation
+  - Model training
+  - Model Evaluation
+  - Model Pusher
+
+- For Flowchart Diagram
+  - [Whimsical](https://whimsical.com/)
+
+[⬆️ Go to Context](#context)
+
+### Data Ingestion Flowchart
+
+```mermaid
+flowchart TD
+    Note1["Data Ingestion Dir &#xA Feature Store File Path &#xA Training File Path &#xA Testing File Path &#xA Train Test split ratio &#xA Collection Name"]
+
+    A[Data Ingestion Config]
+    Note1 --> A
+    A --> B[Initiate Data Ingestion]
+
+    MongoDB[(MongoDB)] -->|data_access| B
+
+    B --> C[Export Data to Feature Store]
+    C -->|EasyVisa.csv| FS[Feature Store]
+
+    C --> D[Split Data as train and test]
+    D --> E[Data Ingestion Artifact]
+    ART --> FS
+    E --> ART[artifact]
+    ART --> ING[Ingested]
+
+    D -->|train.csv| ING[Ingested]
+    D -->|test.csv| ING[Ingested]
+
+    FS --> ING
+```
+
+[⬆️ Go to Context](#context)
+
+#### Data Ingestion Config
+
+- Data Ingestion Directory
+- Feature Store File Path
+- Training File Path
+- Testing File Path
+- Train-Test Split Ratio
+- Collection Name
+
+[⬆️ Go to Context](#context)
+
+#### Database (MongoDB)
+
+- Source of raw data
+- Provides data via `data_access`
+- Connects directly to Initiate Data Ingestion
+
+[⬆️ Go to Context](#context)
+
+#### Initiate Data Ingestion
+
+- Starts ingestion process
+- Pulls data from MongoDB
+
+[⬆️ Go to Context](#context)
+
+#### Export Data to Feature Store
+
+- Exports ingested data into feature store
+- Saves data as CSV (usvisa.csv)
+- Maintains raw version in Feature Store
+
+[⬆️ Go to Context](#context)
+
+#### Split Data as Train and Test
+
+- Splits dataset into train.csv and test.csv
+- Ensures ratio defined in config
+- Outputs Data Ingestion Artifact
+
+[⬆️ Go to Context](#context)
+
+#### Data Ingestion Artifact
+
+- Stores generated artifacts
+- Includes split datasets and metadata
+
+[⬆️ Go to Context](#context)
+
+#### Feature Store
+
+- Repository for ingested and processed data
+- Holds CSV file (usvisa.csv)
+- Maintains Ingested + Artifact directories
+
+[⬆️ Go to Context](#context)
+
+#### Output Files
+
+- `usvisa.csv` → raw data exported to Feature Store
+- `train.csv` → training dataset
+- `test.csv` → testing dataset
+- `artifact/` → metadata and artifacts
+- `ingested/` → ingested dataset ready for next pipeline step
+
+[⬆️ Go to Context](#context)
+
+### Workflow
+
+- Update those in order
+
+  1. [constants](./us_visa_approval_prediction/constants/__init__.py)
+  2. [entity](./us_visa_approval_prediction/entity/)
+     1. [config_entity](./us_visa_approval_prediction/entity/config_entity.py)
+     2. [artifact_entity](./us_visa_approval_prediction/entity/artifact_entity.py)
+  3. [configuration](./us_visa_approval_prediction/configuration/__init__.py)
+     1. [db_connection](./us_visa_approval_prediction/configuration/db_connection.py)
+     2. [test_db_connection](./us_visa_approval_prediction/tests/test_db_connection.py)
+  4. [data_access](./us_visa_approval_prediction/data_access/)
+     1. [data](./us_visa_approval_prediction/data_access/data.py)
+  5. [components](./us_visa_approval_prediction/components/)
+     1. [data_ingestion](./us_visa_approval_prediction/components/data_ingestion.py)
+  6. [pipeline](./us_visa_approval_prediction/pipeline/)
+     1. [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py)
+     2. [test_training_pipeline](./us_visa_approval_prediction/tests/test_training_pipeline.py)
+
+> [!NOTE]
+>
+> - Check [logs](./logs/) for any errors
+>
+> - If everything done properly it will generate artifact directory with timestamp and data after running [test_training_pipeline](./us_visa_approval_prediction/tests/test_training_pipeline.py).
+
+```sh
+📁 artifact
+└── 📁 09_02_2025_22_59_42/
+    └── 📁 data_ingestion/
+        ├── 📁 feature_store/
+        │   └── 📄 usvisa.csv
+        └── 📁 ingested/
+            ├── 📄 test.csv
+            └── 📄 train.csv
+```
 
 [⬆️ Go to Context](#context)

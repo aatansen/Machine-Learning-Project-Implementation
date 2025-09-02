@@ -21,11 +21,14 @@ files_to_create = [
 
     # --- Configuration ---
     f"{project_name}/configuration/__init__.py",
-    f"{project_name}/configuration/config.py",
+    f"{project_name}/configuration/db_connection.py",
 
     # --- Constants ---
     f"{project_name}/constants/__init__.py",
-    f"{project_name}/constants/constants.py",
+
+    # --- Data Access ---
+    f"{project_name}/data_access/__init__.py",
+    f"{project_name}/data_access/data.py",
 
     # --- Entities (config/artifacts) ---
     f"{project_name}/entity/__init__.py",
@@ -52,9 +55,13 @@ files_to_create = [
     f"{project_name}/tests/test_data_ingestion.py",
     f"{project_name}/tests/test_data_transformation.py",
     f"{project_name}/tests/test_model_trainer.py",
+    f"{project_name}/tests/test_db_connection.py",
+    f"{project_name}/tests/test_training_pipeline.py",
 
     # --- Notebooks ---
-    f"{project_name}/notebooks/exploration.ipynb",
+    f"{project_name}/notebooks/01_exploration.ipynb",
+    f"{project_name}/notebooks/02_eda.ipynb",
+    f"{project_name}/notebooks/03_feature_engineering_and_model_training.ipynb",
 
     # --- Application entry points ---
     f"app.py",
@@ -74,6 +81,9 @@ files_to_create = [
     f"{project_name}/data/raw/.gitkeep",
     f"{project_name}/data/interim/.gitkeep",
     f"{project_name}/data/processed/.gitkeep",
+
+    # --- Documents directories with placeholder files ---
+    f"documents/.gitkeep",
 
     # --- Environment file ---
     f".env",
@@ -134,6 +144,7 @@ dist/
 build/
 .ipynb_checkpoints/
 catboost_info/
+artifact/
 """
 
 if not gitignore_path.exists() or ".env" not in gitignore_path.read_text():
