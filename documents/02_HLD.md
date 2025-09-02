@@ -93,7 +93,7 @@ flowchart LR
 
 ### **Machine Learning Model**
 
-- **Model Type**: Classification (Random Forest, XGBoost, Logistic Regression baseline)
+- **Model Type**: Classification (KNN)
 - **Input**: Applicant features
 - **Output**: Approval Probability + Final Decision (Yes/No)
 - **Model Training Pipeline**:
@@ -154,7 +154,7 @@ sequenceDiagram
 
 - **Programming**: Python
 - **Frameworks**: FastAPI / Django REST Framework
-- **ML**: scikit-learn, XGBoost
+- **ML**: scikit-learn, KNN
 - **Data Storage**: MongoDB / CSV files
 - **Deployment**: Docker, GitHub Actions, Cloud Hosting
 - **Monitoring**: Prometheus + Grafana, Evidently AI
