@@ -4,7 +4,7 @@
 
 # **Context**
 - [**Context**](#context)
-  - [**Day 01**](#day-01)
+  - [**Day 01 - Project Introduction \& Setup**](#day-01---project-introduction--setup)
     - [Project: US Visa Approval Prediction](#project-us-visa-approval-prediction)
     - [Requirements](#requirements)
     - [Project Overview](#project-overview)
@@ -19,7 +19,7 @@
       - [Project Structure](#project-structure)
       - [Project Structure Template](#project-structure-template)
       - [Requirements.txt \& setup.py](#requirementstxt--setuppy)
-  - [**Day 02**](#day-02)
+  - [**Day 02 - Database Setup \& Project Utility**](#day-02---database-setup--project-utility)
     - [Agenda](#agenda)
     - [Database Setup](#database-setup)
       - [MongoDB settings](#mongodb-settings)
@@ -29,7 +29,7 @@
       - [Logging Functionality](#logging-functionality)
       - [Exception handling](#exception-handling)
       - [Utility functions / Commonly used functions](#utility-functions--commonly-used-functions)
-  - [**Day 03**](#day-03)
+  - [**Day 03 - EDA, FE \& Model Training**](#day-03---eda-fe--model-training)
     - [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)
       - [Types of Analysis in EDA](#types-of-analysis-in-eda)
       - [Types of Variables in EDA](#types-of-variables-in-eda)
@@ -45,7 +45,7 @@
       - [List of Models](#list-of-models)
       - [Hyperparameter Tuning](#hyperparameter-tuning)
       - [Final Report](#final-report)
-  - [**Day 04**](#day-04)
+  - [**Day 04 - Project Documentation \& Project Management**](#day-04---project-documentation--project-management)
     - [Project Documentation](#project-documentation)
       - [Wireframe](#wireframe)
       - [HLD - High Level Design](#hld---high-level-design)
@@ -56,7 +56,7 @@
       - [Work Types in Agile Boards](#work-types-in-agile-boards)
       - [Work Types Visualize](#work-types-visualize)
 
-## **Day 01**
+## **Day 01 - Project Introduction & Setup**
 
 ### Project: US Visa Approval Prediction
 
@@ -301,7 +301,7 @@
 
 [⬆️ Go to Context](#context)
 
-## **Day 02**
+## **Day 02 - Database Setup & Project Utility**
 
 ### Agenda
 
@@ -432,7 +432,7 @@
 
 [⬆️ Go to Context](#context)
 
-## **Day 03**
+## **Day 03 - EDA, FE & Model Training**
 
 ### Exploratory Data Analysis (EDA)
 
@@ -709,7 +709,7 @@ More Variables:
 
 [⬆️ Go to Context](#context)
 
-## **Day 04**
+## **Day 04 - Project Documentation & Project Management**
 
 ### Project Documentation
 
