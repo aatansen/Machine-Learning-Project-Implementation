@@ -67,6 +67,10 @@
       - [Feature Store](#feature-store)
       - [Output Files](#output-files)
     - [Workflow](#workflow)
+  - [**Day 06 - Data Drift with Evidently \& Data Validation**](#day-06---data-drift-with-evidently--data-validation)
+    - [Data Drift](#data-drift)
+    - [Data Drift Detection Demo using Evidently](#data-drift-detection-demo-using-evidently)
+    - [Data Validation Component](#data-validation-component)
 
 ## **Day 01 - Project Introduction & Setup**
 
@@ -274,7 +278,7 @@
   boto3==1.40.16
   catboost==1.2.8
   dill==0.4.0
-  evidently==0.7.12
+  evidently==0.7.14
   fastapi==0.116.1
   from-root==1.3.0
   httptools==0.6.4
@@ -903,7 +907,7 @@ Big abstract View of Work which then gets broken down in several smaller Tasks c
 
 ```mermaid
 flowchart TD
-    Note1["Data Ingestion Dir &#xA Feature Store File Path &#xA Training File Path &#xA Testing File Path &#xA Train Test split ratio &#xA Collection Name"]
+    Note1(["Data Ingestion Dir &#xA Feature Store File Path &#xA Training File Path &#xA Testing File Path &#xA Train Test split ratio &#xA Collection Name"])
 
     A[Data Ingestion Config]
     Note1 --> A
@@ -1030,5 +1034,124 @@ flowchart TD
             ├── 📄 test.csv
             └── 📄 train.csv
 ```
+
+[⬆️ Go to Context](#context)
+
+## **Day 06 - Data Drift with Evidently & Data Validation**
+
+### Data Drift
+
+- **Population** = All data (e.g., all visa applications).
+
+- **Sample** = Small part of the population we study.
+
+- **Training data** = Sample to teach the model.
+
+- **Test data** = Sample to check the model.
+
+- **Assumption** = Future data will look like training/test data.
+
+- **Data Drift** = When new real-world data is **different** from training/test data.
+
+**Types of Drift**:
+
+- **Covariate Drift** → Inputs change.
+  - Ex: Earlier applicants were mostly students, now most are working professionals.
+- **Prior Probability Drift** → Target distribution changes.
+  - Ex: Approvals drop from 70% to 40%.
+- **Concept Drift** → Input-output relationship changes.
+  - Ex: Income mattered before, now job type matters more.
+
+**How to detect**:
+
+- Compare stats (mean, variance, histograms).
+- Use statistical tests (KS test, Chi-square, PSI).
+- Train a model to separate “old vs. new data.” If it succeeds → drift exists.
+- Using Evidently, a MLOps tool to detect data drift easily
+  - [ML in Production Guide - Data Drift by Evidently](https://www.evidentlyai.com/ml-in-production/data-drift)
+  - [Data Drift Preset by Evidently](https://docs.evidentlyai.com/metrics/preset_data_drift)
+  - [Evidently Github Repository](https://github.com/evidentlyai/evidently)
+
+### Data Drift Detection Demo using Evidently
+
+- This demo usage [Boston Housing Dataset](https://github.com/selva86/datasets/blob/master/BostonHousing.csv?raw=True)
+- **Notebook**: [04_evidently_data_drift_detection.ipynb](./us_visa_approval_prediction/notebooks/04_evidently_data_drift_detection.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
+- Based on this demo we will implement evidently in our project
+
+> [!WARNING]
+>
+> - A warning while runnning the report `divide by zero encountered in divide` and found this
+> - The `RuntimeWarning`: `divide by zero` encountered in divide is a common occurrence in statistical computations, especially when dealing with data that may contain zero values.
+
+[⬆️ Go to Context](#context)
+
+### Data Validation Component
+
+- FlowChart
+
+  ```mermaid
+  flowchart TD
+      %% Config and Initiation
+      Note1(["Data validation dir &#xA Valid data dir &#xA Invalid data dir &#xA Valid train file path &#xA Valid train file path &#xA Invalid test file path &#xA Drift report file path"])
+      Note1 --> A
+      A[Data Validation Config] --> B[Initiate Data Validation]
+      B --> C[Read Data]
+
+      %% Data Ingestion
+      C --> D[Validate number of Columns]
+      C --> E[Data Ingestion Artifact]
+      E --> F[train.csv]
+      E --> G[test.csv]
+
+      %% Column validation checks
+      D --> H[Is numerical columns exist?]
+      D --> I[Is categorical columns exist?]
+
+      %% Train/Test numerical checks
+      H --> J[Train Status]
+      H --> K[Test Status]
+      J --> L{Status}
+      K --> M{Status}
+      L --False--> N[Columns are missing in training data frame]
+      M --False--> O[Columns are missing in testing data frame]
+
+      %% Train/Test categorical checks
+      I --> P[Train Status]
+      I --> Q[Test Status]
+      P --> R{Status}
+      Q --> S{Status}
+      R --False--> T[Categorical columns are missing in training data frame]
+      S --False--> U[Categorical columns are missing in testing data frame]
+
+      %% Validation status
+      L --> V[Validation Status]
+      M --> V
+      R --> V
+      S --> V
+      V --False--> W[Validation Error]
+      V --True--> X[Detect Dataset Drift]
+
+      %% Drift status and artifact
+      X --> Y{Drift Status}
+      Y --False--> Z[Data Validation Artifact]
+      Z --> AA[report]
+
+      %% Report details
+      Z --> Note2(["validation status &#xA valid train file path &#xA valid test file path &#xA invalid train file path &#xA invalid test file path &#xA drift report file path"])
+  ```
+
+- Now update those in order of [Workflow](#workflow)
+  - Update [constants](./us_visa_approval_prediction/constants/__init__.py)
+  - Update [schema.yaml](./us_visa_approval_prediction/config/schema.yaml) inside [config](./us_visa_approval_prediction/config/)
+  - Update [config_entity](./us_visa_approval_prediction/entity/config_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [config_entity](./us_visa_approval_prediction/entity/config_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [artifact_entity](./us_visa_approval_prediction/entity/artifact_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [data_validation](./us_visa_approval_prediction/components/data_validation.py) inside [components](./us_visa_approval_prediction/components/)
+  - Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py) inside [pipeline](us_visa_approval_prediction/pipeline/)
+
+> [!NOTE]
+>
+> - As I use latest version of Evidently AI there are changes in [data_validation](./us_visa_approval_prediction/components/data_validation.py) function `detect_dataset_drift` and library import
+
 
 [⬆️ Go to Context](#context)

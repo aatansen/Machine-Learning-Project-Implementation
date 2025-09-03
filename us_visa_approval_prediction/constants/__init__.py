@@ -22,7 +22,7 @@ PREPROCSSING_OBJECT_FILE_NAME = "preprocessing.pkl"
 FILE_NAME: str = "usvisa.csv"
 TRAIN_FILE_NAME: str = "train.csv"
 TEST_FILE_NAME: str = "test.csv"
-SCHEMA_FILE_PATH = os.path.join("config", "schema.yaml")
+SCHEMA_FILE_PATH = os.path.join(BASE_DIR,"us_visa_approval_prediction", "config", "schema.yaml")
 
 """
 Data Ingestion related constant start with DATA_INGESTION VAR NAME

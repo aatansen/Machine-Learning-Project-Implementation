@@ -62,6 +62,7 @@ files_to_create = [
     f"{project_name}/notebooks/01_exploration.ipynb",
     f"{project_name}/notebooks/02_eda.ipynb",
     f"{project_name}/notebooks/03_feature_engineering_and_model_training.ipynb",
+    f"{project_name}/notebooks/04_evidently_data_drift_detection.ipynb",
 
     # --- Application entry points ---
     f"app.py",
