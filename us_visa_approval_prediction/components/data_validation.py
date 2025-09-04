@@ -99,38 +99,25 @@ class DataValidation:
             report_json_str = report.json()
 
             # Parse JSON string to dictionary
-            report_json = json.loads(report_json_str)
+            json_report = json.loads(report_json_str)
 
             # Save the JSON report
-            write_yaml_file(file_path=self.data_validation_config.drift_report_file_path, content=report_json_str)
+            write_yaml_file(file_path=self.data_validation_config.drift_report_file_path, content=json_report)
 
-            # Extract drift information from the DriftedColumnsCount metric
-            metrics = report_json.get("metrics", [])
+            # Extract drift info
+            n_drifted_features = json_report['metrics'][0]['value']
+            n_features = len(json_report['metrics']) - 1
 
-            # Find the DriftedColumnsCount metric
-            for metric in metrics:
-                if "DriftedColumnsCount" in metric.get("metric_id", ""):
-                    drift_share = metric["value"]["share"]
-                    n_drifted_features = int(metric["value"]["count"])
+            metric_id = json_report['metrics'][0]['metric_id']
+            drift_share = n_drifted_features['share']
+            evidently_threshold = float(metric_id.split("drift_share=")[1].strip(")"))
 
-                    # Extract Evidently's threshold from the metric_id
-                    # metric_id format: "DriftedColumnsCount(drift_share=0.5)"
-                    threshold_match = re.search(r'drift_share=([\d.]+)', metric["metric_id"])
-                    evidently_threshold = float(threshold_match.group(1)) if threshold_match else 0.5
+            drift_status = drift_share >= evidently_threshold
 
-                    # Use Evidently's built-in decision logic
-                    drift_status = drift_share >= evidently_threshold
+            logging.info(f"{int(n_drifted_features['count'])}/{n_features} features drifted "
+                        f"(drift share: {drift_share:.2%}, threshold: {evidently_threshold})")
 
-                    # Calculate total features for logging
-                    value_drift_metrics = [m for m in metrics if "ValueDrift" in m.get("metric_id", "")]
-                    n_features = len(value_drift_metrics)
-
-                    logging.info(f"{n_drifted_features}/{n_features} features drifted (drift share: {drift_share:.2%}, threshold: {evidently_threshold})")
-                    return drift_status
-
-            # Fallback if DriftedColumnsCount metric is not found
-            logging.warning("DriftedColumnsCount metric not found, assuming no drift")
-            return False
+            return drift_status
 
         except Exception as e:
             raise USvisaException(e, sys) from e

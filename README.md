@@ -70,6 +70,7 @@
   - [**Day 06 - Data Drift with Evidently \& Data Validation**](#day-06---data-drift-with-evidently--data-validation)
     - [Data Drift](#data-drift)
     - [Data Drift Detection Demo using Evidently](#data-drift-detection-demo-using-evidently)
+    - [Data Drift Detection on Visa Data](#data-drift-detection-on-visa-data)
     - [Data Validation Component](#data-validation-component)
 
 ## **Day 01 - Project Introduction & Setup**
@@ -1075,13 +1076,19 @@ flowchart TD
 ### Data Drift Detection Demo using Evidently
 
 - This demo usage [Boston Housing Dataset](https://github.com/selva86/datasets/blob/master/BostonHousing.csv?raw=True)
-- **Notebook**: [04_evidently_data_drift_detection.ipynb](./us_visa_approval_prediction/notebooks/04_evidently_data_drift_detection.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
+- **Notebook**: [04_evidently_data_drift_detection_boston_data.ipynb](./us_visa_approval_prediction/notebooks/04_evidently_data_drift_detection_boston_data.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
 - Based on this demo we will implement evidently in our project
 
 > [!WARNING]
 >
 > - A warning while runnning the report `divide by zero encountered in divide` and found this
 > - The `RuntimeWarning`: `divide by zero` encountered in divide is a common occurrence in statistical computations, especially when dealing with data that may contain zero values.
+
+[⬆️ Go to Context](#context)
+
+### Data Drift Detection on Visa Data
+
+- **Notebook**: [05_evidently_data_drift_detection_visa_data.ipynb](./us_visa_approval_prediction/notebooks/05_evidently_data_drift_detection_visa_data.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
 
 [⬆️ Go to Context](#context)
 
@@ -1152,6 +1159,5 @@ flowchart TD
 > [!NOTE]
 >
 > - As I use latest version of Evidently AI there are changes in [data_validation](./us_visa_approval_prediction/components/data_validation.py) function `detect_dataset_drift` and library import
-
 
 [⬆️ Go to Context](#context)
