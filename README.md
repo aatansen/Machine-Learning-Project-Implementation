@@ -75,6 +75,8 @@
   - [**Day 07 - Data Transformation \& Model Training**](#day-07---data-transformation--model-training)
     - [Data Transformation](#data-transformation)
       - [Data Transformation Flowchart](#data-transformation-flowchart)
+    - [Model Training](#model-training)
+      - [Model Training Flowchart](#model-training-flowchart)
 
 ## **Day 01 - Project Introduction & Setup**
 
@@ -1158,6 +1160,7 @@ flowchart TD
   - Update [artifact_entity](./us_visa_approval_prediction/entity/artifact_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
   - Update [data_validation](./us_visa_approval_prediction/components/data_validation.py) inside [components](./us_visa_approval_prediction/components/)
   - Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py) inside [pipeline](us_visa_approval_prediction/pipeline/)
+- Test it by running [test_training_pipeline](./us_visa_approval_prediction/tests/test_training_pipeline.py)
 
 > [!NOTE]
 >
@@ -1189,6 +1192,7 @@ flowchart TD
   - Update [estimator](./us_visa_approval_prediction/entity/estimator.py) inside [entity](./us_visa_approval_prediction/entity/)
   - Update [data_transformation](./us_visa_approval_prediction/components/data_transformation.py) inside [components](./us_visa_approval_prediction/components/)
   - Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py) inside [pipeline](us_visa_approval_prediction/pipeline/)
+- Test it by running [test_training_pipeline](./us_visa_approval_prediction/tests/test_training_pipeline.py)
 
 [⬆️ Go to Context](#context)
 
@@ -1198,3 +1202,21 @@ flowchart TD
 
 [⬆️ Go to Context](#context)
 
+### Model Training
+
+- Choosing best model using [Neuro-MF](https://pypi.org/project/neuro-mf/) package
+- Now update those in order of [Workflow](#workflow)
+  - Update [model](./us_visa_approval_prediction/config/model.yaml) inside [config](./us_visa_approval_prediction/config/model.yaml)
+  - Update [constants](./us_visa_approval_prediction/constants/__init__.py)
+  - Update [config_entity](./us_visa_approval_prediction/entity/config_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [artifact_entity](./us_visa_approval_prediction/entity/artifact_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [estimator](./us_visa_approval_prediction/entity/estimator.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [model_trainer](./us_visa_approval_prediction/components/model_trainer.py) inside [components](./us_visa_approval_prediction/components/)
+  - Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py) inside [pipeline](us_visa_approval_prediction/pipeline/)
+- Test it by running [test_training_pipeline](./us_visa_approval_prediction/tests/test_training_pipeline.py)
+
+#### Model Training Flowchart
+
+![Data Transformation Flowchart](https://i.imgur.com/pRaUrOk.png)
+
+[⬆️ Go to Context](#context)
