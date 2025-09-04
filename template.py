@@ -30,10 +30,11 @@ files_to_create = [
     f"{project_name}/data_access/__init__.py",
     f"{project_name}/data_access/data.py",
 
-    # --- Entities (config/artifacts) ---
+    # --- Entities (config/artifacts/estimator) ---
     f"{project_name}/entity/__init__.py",
     f"{project_name}/entity/config_entity.py",
     f"{project_name}/entity/artifact_entity.py",
+    f"{project_name}/entity/estimator.py",
 
     # --- Logging ---
     f"{project_name}/logger/__init__.py",

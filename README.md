@@ -40,7 +40,7 @@
       - [Skewness and Outlier](#skewness-and-outlier)
       - [Column Transformation for Categorical Values](#column-transformation-for-categorical-values)
       - [Handling Imbalanced Data](#handling-imbalanced-data)
-    - [Model Training](#model-training)
+    - [Model Training (Notebook)](#model-training-notebook)
       - [Train-Test Split](#train-test-split)
       - [List of Models](#list-of-models)
       - [Hyperparameter Tuning](#hyperparameter-tuning)
@@ -72,6 +72,9 @@
     - [Data Drift Detection Demo using Evidently](#data-drift-detection-demo-using-evidently)
     - [Data Drift Detection on Visa Data](#data-drift-detection-on-visa-data)
     - [Data Validation Component](#data-validation-component)
+  - [**Day 07 - Data Transformation \& Model Training**](#day-07---data-transformation--model-training)
+    - [Data Transformation](#data-transformation)
+      - [Data Transformation Flowchart](#data-transformation-flowchart)
 
 ## **Day 01 - Project Introduction & Setup**
 
@@ -222,7 +225,8 @@
   │   ├── 📁 entity/
   │   │   ├── 🐍 __init__.py
   │   │   ├── 🐍 artifact_entity.py
-  │   │   └── 🐍 config_entity.py
+  │   │   ├── 🐍 config_entity.py
+  │   │   └── 🐍 estimator.py
   │   ├── 📁 logger/
   │   │   └── 🐍 __init__.py
   │   ├── 📁 notebooks/
@@ -677,7 +681,7 @@ More Variables:
 
 [⬆️ Go to Context](#context)
 
-### Model Training
+### Model Training (Notebook)
 
 - **Notebook**: [03_feature_engineering_and_model_training.ipynb](./us_visa_approval_prediction/notebooks/03_feature_engineering_and_model_training.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
 
@@ -1151,7 +1155,6 @@ flowchart TD
   - Update [constants](./us_visa_approval_prediction/constants/__init__.py)
   - Update [schema.yaml](./us_visa_approval_prediction/config/schema.yaml) inside [config](./us_visa_approval_prediction/config/)
   - Update [config_entity](./us_visa_approval_prediction/entity/config_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
-  - Update [config_entity](./us_visa_approval_prediction/entity/config_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
   - Update [artifact_entity](./us_visa_approval_prediction/entity/artifact_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
   - Update [data_validation](./us_visa_approval_prediction/components/data_validation.py) inside [components](./us_visa_approval_prediction/components/)
   - Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py) inside [pipeline](us_visa_approval_prediction/pipeline/)
@@ -1161,3 +1164,37 @@ flowchart TD
 > - As I use latest version of Evidently AI there are changes in [data_validation](./us_visa_approval_prediction/components/data_validation.py) function `detect_dataset_drift` and library import
 
 [⬆️ Go to Context](#context)
+
+## **Day 07 - Data Transformation & Model Training**
+
+### Data Transformation
+
+- Transformation
+  - Train Data
+  - Test Data
+  - Preprocessing pickle file
+- Model Train
+  - Model pickle file
+- Model Evalulation
+
+> [!NOTE]
+>
+> - This is a part of [Machine Learning Linear Pipeline](#ml-linear-pipeline)
+> - It will follow this [Workflow](#workflow)
+
+- Now update those in order of [Workflow](#workflow)
+  - Update [constants](./us_visa_approval_prediction/constants/__init__.py)
+  - Update [config_entity](./us_visa_approval_prediction/entity/config_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [artifact_entity](./us_visa_approval_prediction/entity/artifact_entity.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [estimator](./us_visa_approval_prediction/entity/estimator.py) inside [entity](./us_visa_approval_prediction/entity/)
+  - Update [data_transformation](./us_visa_approval_prediction/components/data_transformation.py) inside [components](./us_visa_approval_prediction/components/)
+  - Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py) inside [pipeline](us_visa_approval_prediction/pipeline/)
+
+[⬆️ Go to Context](#context)
+
+#### Data Transformation Flowchart
+
+![Data Transformation Flowchart](https://i.imgur.com/YfGmpOV.png)
+
+[⬆️ Go to Context](#context)
+
