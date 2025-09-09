@@ -365,6 +365,14 @@
 
 - Add Config in [.env](/.env)
 
+  ```sh
+  `DB_NAME`=US_VISA
+  `COLLECTION_NAME`=visa_data
+  `CONNECTION_URL`=mongodb+srv://aatansen...
+  ```
+
+- Usage in code
+
   ```py
   # Get values from environment
   DB_NAME = os.getenv("DB_NAME")
