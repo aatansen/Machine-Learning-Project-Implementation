@@ -13,8 +13,6 @@ CONNECTION_URL = os.getenv("CONNECTION_URL")
 PIPELINE_NAME: str = "usvisa"
 ARTIFACT_DIR: str = "artifact"
 
-MODEL_FILE_NAME = "model.pkl"
-
 TARGET_COLUMN = "case_status"
 CURRENT_YEAR = date.today().year
 PREPROCSSING_OBJECT_FILE_NAME = "preprocessing.pkl"
@@ -23,6 +21,10 @@ FILE_NAME: str = "usvisa.csv"
 TRAIN_FILE_NAME: str = "train.csv"
 TEST_FILE_NAME: str = "test.csv"
 SCHEMA_FILE_PATH = os.path.join(BASE_DIR,"us_visa_approval_prediction", "config", "schema.yaml")
+
+GDRIVE_TOKEN_PATH = os.path.join(BASE_DIR,"gdrive_setup","token.pickle")
+GDRIVE_SCOPES = ['https://www.googleapis.com/auth/drive']
+MODEL_FILE_NAME = "model.pkl"
 
 """
 Data Ingestion related constant start with DATA_INGESTION VAR NAME
@@ -55,3 +57,11 @@ MODEL_TRAINER_TRAINED_MODEL_DIR: str = "trained_model"
 MODEL_TRAINER_TRAINED_MODEL_NAME: str = "model.pkl"
 MODEL_TRAINER_EXPECTED_SCORE: float = 0.6
 MODEL_TRAINER_MODEL_CONFIG_FILE_PATH: str = os.path.join(BASE_DIR,"us_visa_approval_prediction", "config", "model.yaml")
+
+
+"""
+MODEL EVALUATION related constant
+"""
+MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE: float = 0.80
+FOLDER_NAME = "Visa Approval ML Project"
+MODEL_PUSHER_GDRIVE_KEY = "model-registry"

@@ -24,3 +24,5 @@ build/
 .ipynb_checkpoints/
 catboost_info/
 artifact/
+credentials.json
+token.pickle

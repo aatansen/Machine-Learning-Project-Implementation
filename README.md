@@ -77,6 +77,14 @@
       - [Data Transformation Flowchart](#data-transformation-flowchart)
     - [Model Training](#model-training)
       - [Model Training Flowchart](#model-training-flowchart)
+  - [**Day 08 - Model Evaluation \& Model Pusher Component**](#day-08---model-evaluation--model-pusher-component)
+    - [Google Drive Setup](#google-drive-setup)
+      - [Get Credentials](#get-credentials)
+      - [Get Token Pickle](#get-token-pickle)
+    - [Google Drive Connection](#google-drive-connection)
+    - [Model Evaluation](#model-evaluation)
+      - [Model Evaluation Flowchart](#model-evaluation-flowchart)
+    - [Model Pusher](#model-pusher)
 
 ## **Day 01 - Project Introduction & Setup**
 
@@ -198,6 +206,9 @@
   ├── 📁 documents/
   │   └── 📄 .gitkeep
   ├── 📁 US Visa Approval Prediction/
+  │   ├── 📁 cloud_storage/
+  │   │   ├── 🐍 __init__.py
+  │   │   └── 🐍 gdrive_storage.py
   │   ├── 📁 components/
   │   │   ├── 🐍 __init__.py
   │   │   ├── 🐍 data_ingestion.py
@@ -211,7 +222,8 @@
   │   │   └── ⚙️ schema.yaml
   │   ├── 📁 configuration/
   │   │   ├── 🐍 __init__.py
-  │   │   └── 🐍 db_connection.py
+  │   │   ├── 🐍 db_connection.py
+  │   │   └── 🐍 gdrive_connection.py
   │   ├── 📁 constants/
   │   │   └── 🐍 __init__.py
   │   ├── 📁 data/
@@ -228,7 +240,8 @@
   │   │   ├── 🐍 __init__.py
   │   │   ├── 🐍 artifact_entity.py
   │   │   ├── 🐍 config_entity.py
-  │   │   └── 🐍 estimator.py
+  │   │   ├── 🐍 estimator.py
+  │   │   └── 🐍 gdrive_estimator.py
   │   ├── 📁 logger/
   │   │   └── 🐍 __init__.py
   │   ├── 📁 notebooks/
@@ -477,7 +490,7 @@
 
 ### Exploratory Data Analysis (EDA)
 
-- **Notebook**: [02_eda_us_visa.ipynb](./us_visa_approval_prediction/notebooks/02_eda_us_visa.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
+- **Notebook**: [02_eda_us_visa.ipynb](./us_visa_approval_prediction/notebooks/02_eda.ipynb) inside [notebooks](./us_visa_approval_prediction/notebooks/)
 
 [⬆️ Go to Context](#context)
 
@@ -1223,8 +1236,84 @@ flowchart TD
   - Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py) inside [pipeline](us_visa_approval_prediction/pipeline/)
 - Test it by running [test_training_pipeline](./us_visa_approval_prediction/tests/test_training_pipeline.py)
 
+[⬆️ Go to Context](#context)
+
 #### Model Training Flowchart
 
 ![Data Transformation Flowchart](https://i.imgur.com/pRaUrOk.png)
+
+[⬆️ Go to Context](#context)
+
+## **Day 08 - Model Evaluation & Model Pusher Component**
+
+### Google Drive Setup
+
+#### Get Credentials
+
+- Open [Google Cloud Platform](https://console.developers.google.com/)
+- Create a [new Project](https://console.cloud.google.com/projectcreate)
+- From **Navigation menu** select **APIs & Services** where [**library**](https://console.cloud.google.com/apis/library) submanu can be found
+- Now search for [Google Drive API](https://console.cloud.google.com/apis/library/drive.googleapis.com) and enable it
+- Now configure the [OAuth consent screen](https://console.cloud.google.com/auth/overview/create) where we need to fillup information about the application
+  - **Important**: give test user access to `<your>@gmail.com`
+- Now navigate to [OAuth 2.0 Client](https://console.cloud.google.com/auth/clients) and create client
+  - Select application type `Desktop App`
+- Click on create and get the `.json` file containing `Client ID` & `Client secret` and others info
+- Rename it to `credentials.json`
+
+> [!NOTE]
+>
+> - To redownload `.json` clicking on name and generating a new client secret will provide the json download option
+
+[⬆️ Go to Context](#context)
+
+#### Get Token Pickle
+
+- Save `credentials.json` in [gdrive_setup](./gdrive_setup/)
+- Run [generate_token.py](./gdrive_setup/generate_token.py)
+- It will generate `token.pickle` file
+- Moved this `token.pickle` to [root path](./) or fill up [constants](./us_visa_approval_prediction/constants/__init__.py) `GDRIVE_TOKEN_PATH`
+
+[⬆️ Go to Context](#context)
+
+### Google Drive Connection
+
+- Add new configuration [gdrive_connection](./us_visa_approval_prediction/configuration/gdrive_connection.py)
+- Update [constants](./us_visa_approval_prediction/constants/__init__.py)
+
+  ```py
+  GDRIVE_TOKEN_PATH = os.path.join(BASE_DIR,"gdrive_setup","token.pickle")
+  GDRIVE_SCOPES = ['https://www.googleapis.com/auth/drive']
+  MODEL_FILE_NAME = "model.pkl"
+  ```
+
+- Add a new directory [cloud_storage](./us_visa_approval_prediction/cloud_storage/) where [gdrive_storage](./us_visa_approval_prediction/cloud_storage/gdrive_storage.py) will be added
+- A new [entity](./us_visa_approval_prediction/entity/gdrive_estimator.py) where [gdrive_estimator](./us_visa_approval_prediction/entity/gdrive_estimator.py)
+
+[⬆️ Go to Context](#context)
+
+### Model Evaluation
+
+- Update [config_entity](./us_visa_approval_prediction/entity/config_entity.py)
+- Update [artifact_entity](./us_visa_approval_prediction/entity/artifact_entity.py)
+- Update [model_evaluation](./us_visa_approval_prediction/components/model_evaluation.py)
+- Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py)
+
+[⬆️ Go to Context](#context)
+
+#### Model Evaluation Flowchart
+
+![Model Evaluation](https://i.imgur.com/MMNvAGE.png)
+
+[⬆️ Go to Context](#context)
+
+### Model Pusher
+
+- Update [model_pusher](./us_visa_approval_prediction/components/model_pusher.py)
+  - Update [config_entity](./us_visa_approval_prediction/entity/config_entity.py)
+  - Update [artifact_entity](./us_visa_approval_prediction/entity/artifact_entity.py)
+- Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py)
+
+Finally run [test_training_pipeline](./us_visa_approval_prediction/tests/test_training_pipeline.py)
 
 [⬆️ Go to Context](#context)

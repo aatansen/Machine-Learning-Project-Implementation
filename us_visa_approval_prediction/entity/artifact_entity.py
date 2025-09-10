@@ -27,3 +27,16 @@ class ClassificationMetricArtifact:
 class ModelTrainerArtifact:
     trained_model_file_path:str
     metric_artifact:ClassificationMetricArtifact
+
+@dataclass
+class ModelEvaluationArtifact:
+    is_model_accepted: bool
+    changed_accuracy: float
+    gdrive_model_path: str  # Updated from s3_model_path
+    trained_model_path: str
+
+
+@dataclass
+class ModelPusherArtifact:
+    folder_name: str  # Updated from bucket_name
+    gdrive_model_path: str  # Updated from s3_model_path
