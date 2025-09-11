@@ -70,5 +70,5 @@ MODEL_PUSHER_GDRIVE_KEY = "model-registry"
 """
 Web App related constant
 """
-APP_HOST = "127.0.0.1"
+APP_HOST = "0.0.0.0"
 APP_PORT = 8080
