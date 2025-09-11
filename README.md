@@ -85,6 +85,9 @@
     - [Model Evaluation](#model-evaluation)
       - [Model Evaluation Flowchart](#model-evaluation-flowchart)
     - [Model Pusher](#model-pusher)
+  - [**Day 09 - Prediction Pipeline \& Web Application using FastAPI**](#day-09---prediction-pipeline--web-application-using-fastapi)
+    - [Prediction Pipeline](#prediction-pipeline)
+    - [Web Application using FastAPI](#web-application-using-fastapi)
 
 ## **Day 01 - Project Introduction & Setup**
 
@@ -205,6 +208,11 @@
   ├── 📁 Root Path
   ├── 📁 documents/
   │   └── 📄 .gitkeep
+  ├── 📁 static/
+  │   └── 📁 css/
+  │       └── 🎨 style.css
+  ├── 📁 templates/
+  │   └── 🌐 index.html
   ├── 📁 US Visa Approval Prediction/
   │   ├── 📁 cloud_storage/
   │   │   ├── 🐍 __init__.py
@@ -376,7 +384,7 @@
 
 #### MongoDB settings
 
-- Add Config in [.env](/.env)
+- Add Config in [.env](./.env)
 
   ```sh
   `DB_NAME`=US_VISA
@@ -1315,5 +1323,28 @@ flowchart TD
 - Update [training_pipeline](./us_visa_approval_prediction/pipeline/training_pipeline.py)
 
 Finally run [test_training_pipeline](./us_visa_approval_prediction/tests/test_training_pipeline.py)
+
+[⬆️ Go to Context](#context)
+
+## **Day 09 - Prediction Pipeline & Web Application using FastAPI**
+
+### Prediction Pipeline
+
+- Update [prediction_pipeline](./us_visa_approval_prediction/pipeline/prediction_pipeline.py)
+- Add `USvisaPredictorConfig` in [config_entity](./us_visa_approval_prediction/entity/config_entity.py)
+
+[⬆️ Go to Context](#context)
+
+### Web Application using FastAPI
+
+- Update [app](./app.py)
+- Add [templates](./templates/) & [static](./static/) files
+  - [index.html](./templates/index.html)
+  - [style.css](./static/css/style.css)
+- Run [app](./app.py)
+
+  ```py
+  python app.py
+  ```
 
 [⬆️ Go to Context](#context)

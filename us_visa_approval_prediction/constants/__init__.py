@@ -65,3 +65,10 @@ MODEL EVALUATION related constant
 MODEL_EVALUATION_CHANGED_THRESHOLD_SCORE: float = 0.80
 FOLDER_NAME = "Visa Approval ML Project"
 MODEL_PUSHER_GDRIVE_KEY = "model-registry"
+
+
+"""
+Web App related constant
+"""
+APP_HOST = "127.0.0.1"
+APP_PORT = 8080

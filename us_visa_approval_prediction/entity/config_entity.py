@@ -51,3 +51,9 @@ class ModelEvaluationConfig:
 class ModelPusherConfig:
     folder_name: str = FOLDER_NAME  # Updated from bucket_name
     gdrive_model_key_path: str = MODEL_FILE_NAME  # Updated from s3_model_key_path
+
+
+@dataclass
+class USvisaPredictorConfig:
+    model_file_path: str = MODEL_FILE_NAME
+    model_folder_name: str = FOLDER_NAME

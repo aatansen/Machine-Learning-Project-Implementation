@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>US Visa Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css')}}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand mx-auto">
+                <i class="fas fa-passport me-2"></i>
+                US Visa Approval Prediction
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container main-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <!-- Training Status Panel -->
+                <div class="training-panel">
+                    <h5 class="mb-3">
+                        <i class="fas fa-cog me-2"></i>
+                        Model Training Status
+                    </h5>
+                    <div class="training-status">
+                        <div class="status-dot idle" id="trainingDot"></div>
+                        <span id="trainingStatus">Model Ready</span>
+                    </div>
+                    <button type="button" class="btn btn-train" id="trainBtn" onclick="startTraining()">
+                        <i class="fas fa-play me-2"></i>
+                        Start Training
+                    </button>
+                    <div class="progress-container" id="trainingProgress">
+                        <div class="progress">
+                            <div class="progress-bar" id="trainingProgressBar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted mt-1 d-block" id="progressText">Initializing...</small>
+                    </div>
+                </div>
+
+                <!-- Prediction Card -->
+                <div class="prediction-card float-animation">
+                    <div class="card-header">
+                        <h1>
+                            <i class="fas fa-user-check me-3"></i>
+                            Visa Predictor
+                        </h1>
+                        <p>Get instant predictions on your US visa application status</p>
+                    </div>
+                    <div class="card-body">
+                        <form id="visaForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="continent" name="continent" required>
+                                            <option value="" disabled selected>Choose...</option>
+                                            <option value="Asia">Asia</option>
+                                            <option value="Africa">Africa</option>
+                                            <option value="North America">North America</option>
+                                            <option value="Europe">Europe</option>
+                                            <option value="South America">South America</option>
+                                            <option value="Oceania">Oceania</option>
+                                        </select>
+                                        <label for="continent">
+                                            <i class="fas fa-globe-americas me-2"></i>Continent
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="education_of_employee" name="education_of_employee" required>
+                                            <option value="" disabled selected>Choose...</option>
+                                            <option value="High School">High School</option>
+                                            <option value="Bachelor's">Bachelor's</option>
+                                            <option value="Master's">Master's</option>
+                                            <option value="Doctorate">Doctorate</option>
+                                        </select>
+                                        <label for="education_of_employee">
+                                            <i class="fas fa-graduation-cap me-2"></i>Education Level
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="has_job_experience" name="has_job_experience" required>
+                                            <option value="" disabled selected>Choose...</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                        <label for="has_job_experience">
+                                            <i class="fas fa-briefcase me-2"></i>Has Job Experience
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="requires_job_training" name="requires_job_training" required>
+                                            <option value="" disabled selected>Choose...</option>
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                        <label for="requires_job_training">
+                                            <i class="fas fa-chalkboard-teacher me-2"></i>Requires Training
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="no_of_employees" name="no_of_employees" 
+                                               min="14500" max="40000" placeholder="15000" required>
+                                        <label for="no_of_employees">
+                                            <i class="fas fa-users me-2"></i>Number of Employees
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="company_age" name="company_age" 
+                                               min="15" max="180" placeholder="25" required>
+                                        <label for="company_age">
+                                            <i class="fas fa-building me-2"></i>Company Age (years)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="region_of_employment" name="region_of_employment" required>
+                                            <option value="" disabled selected>Choose...</option>
+                                            <option value="West">West</option>
+                                            <option value="Northeast">Northeast</option>
+                                            <option value="South">South</option>
+                                            <option value="Midwest">Midwest</option>
+                                            <option value="Island">Island</option>
+                                        </select>
+                                        <label for="region_of_employment">
+                                            <i class="fas fa-map-marker-alt me-2"></i>Region of Employment
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="prevailing_wage" name="prevailing_wage" 
+                                               min="600" max="70000" placeholder="5000" required>
+                                        <label for="prevailing_wage">
+                                            <i class="fas fa-dollar-sign me-2"></i>Prevailing Wage
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="unit_of_wage" name="unit_of_wage" required>
+                                            <option value="" disabled selected>Choose...</option>
+                                            <option value="Hour">Hour</option>
+                                            <option value="Week">Week</option>
+                                            <option value="Month">Month</option>
+                                            <option value="Year">Year</option>
+                                        </select>
+                                        <label for="unit_of_wage">
+                                            <i class="fas fa-clock me-2"></i>Wage Unit
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="full_time_position" name="full_time_position" required>
+                                            <option value="" disabled selected>Choose...</option>
+                                            <option value="Y">Full Time</option>
+                                            <option value="N">Part Time</option>
+                                        </select>
+                                        <label for="full_time_position">
+                                            <i class="fas fa-calendar-check me-2"></i>Position Type
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="progress-container" id="predictionProgress">
+                                <div class="progress">
+                                    <div class="progress-bar" id="predictionProgressBar" style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted mt-1 d-block" id="predictionProgressText">Processing...</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-predict pulse-animation" id="predictBtn">
+                                <span id="predictText">
+                                    <i class="fas fa-magic me-2"></i>
+                                    Predict Visa Status
+                                </span>
+                                <div class="loading-spinner" id="loadingSpinner">
+                                    <div class="spinner"></div>
+                                </div>
+                            </button>
+                        </form>
+
+                        <!-- Result Display -->
+                        <div class="status-card status-approved" id="approvedResult">
+                            <h3><i class="fas fa-check-circle me-2"></i>Visa Approved!</h3>
+                            <p>Congratulations! Your application is likely to be approved.</p>
+                        </div>
+
+                        <div class="status-card status-rejected" id="rejectedResult">
+                            <h3><i class="fas fa-times-circle me-2"></i>Visa Not Approved</h3>
+                            <p>Unfortunately, your application may face challenges. Consider reviewing your details.</p>
+                        </div>
+
+                        <div class="status-card status-training" id="trainingResult">
+                            <h3><i class="fas fa-cog me-2"></i>Training Complete!</h3>
+                            <p>Model has been successfully trained and is ready for predictions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Made with <i class="fas fa-heart text-danger"></i> by <a href="https://github.com/aatansen/" target="_blank">aatansen</a></p>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let isTraining = false;
+        let isPredicting = false;
+
+        // Training functionality
+        function startTraining() {
+            if (isTraining) return;
+            
+            isTraining = true;
+            const trainBtn = document.getElementById('trainBtn');
+            const trainingDot = document.getElementById('trainingDot');
+            const trainingStatus = document.getElementById('trainingStatus');
+            const trainingProgress = document.getElementById('trainingProgress');
+            const trainingProgressBar = document.getElementById('trainingProgressBar');
+            const progressText = document.getElementById('progressText');
+
+            trainBtn.disabled = true;
+            trainBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Training...';
+            
+            trainingDot.className = 'status-dot training';
+            trainingStatus.textContent = 'Training in Progress...';
+            trainingProgress.style.display = 'block';
+
+            // Simulate training progress
+            let stageIndex = 0;
+            const stages = [
+                { text: 'Loading data...', duration: 1000 },
+                { text: 'Preprocessing features...', duration: 1500 },
+                { text: 'Training model...', duration: 3000 },
+                { text: 'Validating performance...', duration: 1500 },
+                { text: 'Saving model...', duration: 1000 }
+            ];
+
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+            async function updateProgress() {
+                if (stageIndex < stages.length) {
+                    const stage = stages[stageIndex];
+                    progressText.textContent = stage.text;
+                    
+                    const stageProgress = ((stageIndex + 1) / stages.length) * 100;
+                    trainingProgressBar.style.width = stageProgress + '%';
+                    
+                    try {
+                        if (stage.text === 'Training model...') {
+                            await Promise.all([
+                                sleep(stage.duration),
+                                (async () => {
+                                    const response = await fetch('/train');
+                                    if (!response.ok) {
+                                        throw new Error(`HTTP error! status: ${response.status}`);
+                                    }
+                                    const text = await response.text();
+                                    if (!text.includes('Training successful')) {
+                                        throw new Error(text);
+                                    }
+                                })()
+                            ]);
+                        } else {
+                            await sleep(stage.duration);
+                        }
+                    } catch (error) {
+                        handleTrainingError(error);
+                        return;
+                    }
+                    
+                    stageIndex++;
+                    await updateProgress();
+                } else {
+                    // Training complete
+                    trainingDot.className = 'status-dot success';
+                    trainingStatus.textContent = 'Training Complete!';
+                    progressText.textContent = 'Model ready for predictions';
+                    
+                    setTimeout(() => {
+                        trainingProgress.style.display = 'none';
+                        trainBtn.disabled = false;
+                        trainBtn.innerHTML = '<i class="fas fa-redo me-2"></i>Retrain Model';
+                        isTraining = false;
+                        
+                        // Show success result
+                        document.getElementById('trainingResult').style.display = 'block';
+                        setTimeout(() => {
+                            document.getElementById('trainingResult').style.display = 'none';
+                        }, 5000);
+                        
+                        showToast('Training Complete!', 'Model has been successfully trained.', 'success');
+                    }, 1000);
+                }
+            }
+
+            updateProgress();
+        }
+
+        function handleTrainingError(error) {
+            console.error('Training error:', error);
+            
+            trainingDot.className = 'status-dot error';
+            trainingStatus.textContent = 'Training Failed';
+            progressText.textContent = `Error: ${error.message}`;
+            trainingProgressBar.style.width = '100%';
+            trainingProgressBar.style.background = 'var(--danger-color)';
+            
+            setTimeout(() => {
+                trainingProgress.style.display = 'none';
+                trainingProgressBar.style.background = 'linear-gradient(90deg, var(--primary-color), var(--secondary-color))';
+                trainBtn.disabled = false;
+                trainBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Training';
+                isTraining = false;
+            }, 2000);
+            
+            showToast('Training Failed!', `Error: ${error.message}`, 'danger');
+        }
+
+        // Form submission - Real API integration
+        document.getElementById('visaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (isPredicting) return;
+            
+            isPredicting = true;
+            const predictBtn = document.getElementById('predictBtn');
+            const predictText = document.getElementById('predictText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const predictionProgress = document.getElementById('predictionProgress');
+            const predictionProgressBar = document.getElementById('predictionProgressBar');
+            const predictionProgressText = document.getElementById('predictionProgressText');
+
+            // Hide previous results
+            document.getElementById('approvedResult').style.display = 'none';
+            document.getElementById('rejectedResult').style.display = 'none';
+
+            // Show loading state
+            predictBtn.disabled = true;
+            predictText.style.display = 'none';
+            loadingSpinner.style.display = 'block';
+            predictionProgress.style.display = 'block';
+
+            // Animate prediction progress
+            const predictionStages = [
+                { text: 'Validating input data...', width: 20, duration: 500 },
+                { text: 'Sending data to server...', width: 40, duration: 300 },
+                { text: 'Processing prediction...', width: 70, duration: 0 }, // Will continue until response
+            ];
+
+            for (let i = 0; i < 2; i++) { // Animate first 2 stages
+                const stage = predictionStages[i];
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        predictionProgressText.textContent = stage.text;
+                        predictionProgressBar.style.width = stage.width + '%';
+                        resolve();
+                    }, stage.duration);
+                });
+            }
+
+            // Show final stage
+            predictionProgressText.textContent = predictionStages[2].text;
+            predictionProgressBar.style.width = '70%';
+
+            try {
+                // Prepare form data for your FastAPI backend
+                const formData = new FormData(this);
+                
+                // Make API call to your prediction endpoint
+                const response = await fetch('/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const contentType = response.headers.get('content-type');
+                
+                if (contentType && contentType.includes('application/json')) {
+                    // Handle JSON error response
+                    const result = await response.json();
+                    if (result.status === false) {
+                        throw new Error(result.error);
+                    }
+                } else {
+                    // Handle HTML response (your template response)
+                    const htmlText = await response.text();
+                    
+                    // Parse the response to extract the context (prediction result)
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlText, 'text/html');
+                    const contextElement = doc.querySelector('.display-4');
+                    
+                    let predictionResult = 'Unknown';
+                    if (contextElement) {
+                        const fullText = contextElement.textContent;
+                        // Extract the status from "Visa Prediction Status: [status]"
+                        const match = fullText.match(/Visa Prediction Status:\s*(.+)/);
+                        if (match) {
+                            predictionResult = match[1].trim();
+                        }
+                    }
+
+                    // Complete the progress animation
+                    predictionProgressText.textContent = 'Prediction complete!';
+                    predictionProgressBar.style.width = '100%';
+
+                    setTimeout(() => {
+                        predictionProgress.style.display = 'none';
+                        predictBtn.disabled = false;
+                        predictText.style.display = 'block';
+                        loadingSpinner.style.display = 'none';
+                        isPredicting = false;
+
+                        // Show result based on prediction
+                        const isApproved = predictionResult.toLowerCase().includes('approved') && 
+                                         !predictionResult.toLowerCase().includes('not');
+
+                        if (isApproved) {
+                            document.getElementById('approvedResult').style.display = 'block';
+                            showToast('Prediction Complete!', 'Visa approval predicted successfully!', 'success');
+                        } else if (predictionResult !== 'Unknown' && predictionResult !== 'Rendering') {
+                            document.getElementById('rejectedResult').style.display = 'block';
+                            showToast('Prediction Complete!', 'Visa status predicted successfully.', 'info');
+                        } else {
+                            showToast('Prediction Complete!', `Status: ${predictionResult}`, 'info');
+                        }
+
+                        // Auto hide result after 10 seconds
+                        setTimeout(() => {
+                            document.getElementById('approvedResult').style.display = 'none';
+                            document.getElementById('rejectedResult').style.display = 'none';
+                        }, 10000);
+                    }, 800);
+                }
+
+            } catch (error) {
+                console.error('Prediction error:', error);
+                
+                predictionProgressText.textContent = `Error: ${error.message}`;
+                predictionProgressBar.style.width = '100%';
+                predictionProgressBar.style.background = 'var(--danger-color)';
+                
+                setTimeout(() => {
+                    predictionProgress.style.display = 'none';
+                    predictBtn.disabled = false;
+                    predictText.style.display = 'block';
+                    loadingSpinner.style.display = 'none';
+                    isPredicting = false;
+                    predictionProgressBar.style.background = 'linear-gradient(90deg, var(--primary-color), var(--secondary-color))';
+                }, 2000);
+                
+                showToast('Prediction Failed!', `Error: ${error.message}`, 'danger');
+            }
+        });
+
+        // Toast notification system
+        function showToast(title, message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast-' + Date.now();
+            
+            const toastHtml = `
+                <div class="toast custom-toast" id="${toastId}" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header bg-${type} text-white">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                        <strong class="me-auto">${title}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+            
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement, { delay: 5000 });
+            toast.show();
+            
+            toastElement.addEventListener('hidden.bs.toast', () => {
+                toastElement.remove();
+            });
+        }
+
+        // Form validation and interactive feedback
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('change', function() {
+                if (this.checkValidity()) {
+                    this.style.borderColor = 'var(--success-color)';
+                    this.style.boxShadow = '0 0 0 0.25rem rgba(40, 167, 69, 0.25)';
+                } else {
+                    this.style.borderColor = 'var(--danger-color)';
+                    this.style.boxShadow = '0 0 0 0.25rem rgba(220, 53, 69, 0.25)';
+                }
+            });
+        });
+
+        // Initialize tooltips
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast('Welcome!', 'Fill out the form to get your visa prediction.', 'info');
+        });
+    </script>
+</body>
+</html>

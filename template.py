@@ -95,6 +95,11 @@ files_to_create = [
 
     # --- Environment file ---
     f".env",
+
+    # --- Frontend ---
+    f"templates/index.html",
+    f"static/css/style.css",
+
 ]
 
 # Create all files and parent directories
@@ -153,6 +158,8 @@ build/
 .ipynb_checkpoints/
 catboost_info/
 artifact/
+credentials.json
+token.pickle
 """
 
 if not gitignore_path.exists() or ".env" not in gitignore_path.read_text():
