@@ -22,7 +22,8 @@ TRAIN_FILE_NAME: str = "train.csv"
 TEST_FILE_NAME: str = "test.csv"
 SCHEMA_FILE_PATH = os.path.join(BASE_DIR,"us_visa_approval_prediction", "config", "schema.yaml")
 
-GDRIVE_TOKEN_PATH = os.path.join(BASE_DIR,"gdrive_setup","token.pickle")
+# GDRIVE_TOKEN_PATH = os.path.join(BASE_DIR,"gdrive_setup","token.pickle")
+GDRIVE_TOKEN_PATH=""
 GDRIVE_SCOPES = ['https://www.googleapis.com/auth/drive']
 MODEL_FILE_NAME = "model.pkl"
 
