@@ -12,6 +12,34 @@ from us_visa_approval_prediction.constants import APP_HOST, APP_PORT
 from us_visa_approval_prediction.pipeline.prediction_pipeline import USvisaData, USvisaClassifier
 from us_visa_approval_prediction.pipeline.training_pipeline import TrainingPipeline
 
+import os
+import requests
+from dotenv import load_dotenv
+
+# --- 1️⃣ Load .env ---
+load_dotenv()
+
+TOKEN_URL = os.getenv("TOKEN_URL")
+TOKEN_DIR = "gdrive_setup"
+TOKEN_PATH = os.path.join(TOKEN_DIR, "token.pickle")
+
+# Create directory if it doesn't exist
+os.makedirs(TOKEN_DIR, exist_ok=True)
+
+# Download token.pickle only if not exists
+if not os.path.exists(TOKEN_PATH):
+    try:
+        response = requests.get(TOKEN_URL)
+        response.raise_for_status()
+        with open(TOKEN_PATH, "wb") as f:
+            f.write(response.content)
+        print(f"token.pickle downloaded to {TOKEN_PATH}")
+    except Exception as e:
+        print(f"Failed to download token.pickle: {e}")
+        raise
+else:
+    print(f"token.pickle already exists at {TOKEN_PATH}, skipping download.")
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")

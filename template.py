@@ -125,6 +125,9 @@ for file_path in files_to_create:
 DB_NAME=
 COLLECTION_NAME=
 CONNECTION_URL=
+
+# Token
+TOKEN_URL=
 """
         path.write_text(env_template.strip())
     else:
