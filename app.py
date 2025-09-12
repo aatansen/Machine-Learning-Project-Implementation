@@ -15,10 +15,12 @@ from us_visa_approval_prediction.pipeline.training_pipeline import TrainingPipel
 import os
 import requests
 from dotenv import load_dotenv
+from fastapi import HTTPException, status, Query
+from fastapi.responses import FileResponse
 
 # --- 1️⃣ Load .env ---
 load_dotenv()
-
+TRAIN_PASS = os.getenv("TRAIN_PASS")
 TOKEN_URL = os.getenv("TOKEN_URL")
 TOKEN_DIR = "gdrive_setup"
 TOKEN_PATH = os.path.join(TOKEN_DIR, "token.pickle")
@@ -92,15 +94,26 @@ async def index(request: Request):
     return templates.TemplateResponse(
             "index.html",{"request": request, "context": "Rendering"})
 
+@app.get("/drift-report")
+async def get_drift_report():
+    report_path = "us_visa_approval_prediction/notebooks/visa_data_drift_report.html"
+    if not os.path.exists(report_path):
+        raise HTTPException(status_code=404, detail="Drift report not found")
+    return FileResponse(report_path, media_type="text/html")
+
+
 @app.get("/train")
-async def trainRouteClient():
+async def trainRouteClient(password: str = Query(..., description="Training password")):
+    if password != TRAIN_PASS:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid password for training"
+        )
+
     try:
         train_pipeline = TrainingPipeline()
-
         train_pipeline.run_pipeline()
-
         return Response("Training successful !!")
-
     except Exception as e:
         return Response(f"Error Occurred! {e}")
 

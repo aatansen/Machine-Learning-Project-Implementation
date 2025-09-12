@@ -33,7 +33,7 @@
                         <div class="status-dot idle" id="trainingDot"></div>
                         <span id="trainingStatus">Model Ready</span>
                     </div>
-                    <button type="button" class="btn btn-train" id="trainBtn" onclick="startTraining()">
+                    <button type="button" class="btn btn-train" id="trainBtn" onclick="showPasswordModal()">
                         <i class="fas fa-play me-2"></i>
                         Start Training
                     </button>
@@ -43,6 +43,9 @@
                         </div>
                         <small class="text-muted mt-1 d-block" id="progressText">Initializing...</small>
                     </div>
+                    <a href="/drift-report" target="_blank" class="btn btn-drift">
+                        <i class="fas fa-chart-line me-2"></i> Drift Report
+                    </a>
                 </div>
 
                 <!-- Prediction Card -->
@@ -232,6 +235,61 @@
         </div>
     </div>
 
+    <!-- Password Modal -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="passwordModalLabel">
+                        <i class="fas fa-lock me-2"></i>Training Authentication
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Enter the training password to start the model training process.
+                    </p>
+                    <form id="passwordForm">
+                        <div class="password-input">
+                            <div class="form-floating">
+                                <input type="password" class="form-control" id="trainingPassword" placeholder="Enter training password" required>
+                                <label for="trainingPassword">
+                                    <i class="fas fa-key me-2"></i>Training Password
+                                </label>
+                                <button type="button" class="password-toggle" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="password-requirements">
+                            <div class="requirement-item">
+                                <i class="fas fa-shield-alt text-info"></i>
+                                <span>Password is required for security purposes</span>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="fas fa-clock text-warning"></i>
+                                <span>Training process may take several minutes</span>
+                            </div>
+                            <div class="requirement-item">
+                                <i class="fas fa-exclamation-triangle text-danger"></i>
+                                <span>Do not close the browser during training</span>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="submit" class="btn btn-modal-train" id="modalTrainBtn">
+                                <i class="fas fa-play me-2"></i>
+                                Start Training
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <div class="footer">
         <p>Made with <i class="fas fa-heart text-danger"></i> by <a href="https://github.com/aatansen/" target="_blank">aatansen</a></p>
@@ -244,9 +302,50 @@
     <script>
         let isTraining = false;
         let isPredicting = false;
+        let passwordModal;
 
-        // Training functionality
-        function startTraining() {
+        // Initialize modal
+        document.addEventListener('DOMContentLoaded', function() {
+            passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+            showToast('Welcome!', 'Fill out the form to get your visa prediction.', 'info');
+        });
+
+        // Show password modal
+        function showPasswordModal() {
+            if (isTraining) return;
+            passwordModal.show();
+        }
+
+        // Password toggle functionality
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('trainingPassword');
+            const toggleIcon = this.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        });
+
+        // Password form submission
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('trainingPassword').value.trim();
+            
+            if (!password) {
+                showToast('Invalid Input!', 'Please enter a password.', 'warning');
+                return;
+            }
+
+            passwordModal.hide();
+            startTraining(password);
+        });
+
+        // Training functionality with password
+        function startTraining(password) {
             if (isTraining) return;
             
             isTraining = true;
@@ -264,9 +363,13 @@
             trainingStatus.textContent = 'Training in Progress...';
             trainingProgress.style.display = 'block';
 
+            // Clear password input
+            document.getElementById('trainingPassword').value = '';
+
             // Simulate training progress
             let stageIndex = 0;
             const stages = [
+                { text: 'Validating credentials...', duration: 800 },
                 { text: 'Loading data...', duration: 1000 },
                 { text: 'Preprocessing features...', duration: 1500 },
                 { text: 'Training model...', duration: 3000 },
@@ -289,8 +392,11 @@
                             await Promise.all([
                                 sleep(stage.duration),
                                 (async () => {
-                                    const response = await fetch('/train');
+                                    const response = await fetch(`/train?password=${encodeURIComponent(password)}`);
                                     if (!response.ok) {
+                                        if (response.status === 401) {
+                                            throw new Error('Invalid password for training');
+                                        }
                                         throw new Error(`HTTP error! status: ${response.status}`);
                                     }
                                     const text = await response.text();
@@ -338,6 +444,13 @@
         function handleTrainingError(error) {
             console.error('Training error:', error);
             
+            const trainingDot = document.getElementById('trainingDot');
+            const trainingStatus = document.getElementById('trainingStatus');
+            const trainingProgress = document.getElementById('trainingProgress');
+            const trainingProgressBar = document.getElementById('trainingProgressBar');
+            const progressText = document.getElementById('progressText');
+            const trainBtn = document.getElementById('trainBtn');
+            
             trainingDot.className = 'status-dot error';
             trainingStatus.textContent = 'Training Failed';
             progressText.textContent = `Error: ${error.message}`;
@@ -352,7 +465,12 @@
                 isTraining = false;
             }, 2000);
             
-            showToast('Training Failed!', `Error: ${error.message}`, 'danger');
+            // Show specific error message for incorrect password
+            if (error.message.includes('Invalid password')) {
+                showToast('Authentication Failed!', 'Incorrect training password. Please try again.', 'danger');
+            } else {
+                showToast('Training Failed!', `Error: ${error.message}`, 'danger');
+            }
         }
 
         // Form submission - Real API integration
@@ -535,11 +653,6 @@
                     this.style.boxShadow = '0 0 0 0.25rem rgba(220, 53, 69, 0.25)';
                 }
             });
-        });
-
-        // Initialize tooltips
-        document.addEventListener('DOMContentLoaded', function() {
-            showToast('Welcome!', 'Fill out the form to get your visa prediction.', 'info');
         });
     </script>
 </body>

@@ -128,6 +128,8 @@ CONNECTION_URL=
 
 # Token
 TOKEN_URL=
+
+TRAIN_PASS=
 """
         path.write_text(env_template.strip())
     else:
