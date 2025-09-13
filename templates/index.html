@@ -1,3 +1,4 @@
+<!-- index.html (with corrected static URL for style.css) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +7,8 @@
     <title>US Visa Prediction</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css')}}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="{{ request.url_for('static', path='css/style.css') }}">
 </head>
 <body>
     <!-- Navigation -->
@@ -33,19 +35,192 @@
                         <div class="status-dot idle" id="trainingDot"></div>
                         <span id="trainingStatus">Model Ready</span>
                     </div>
-                    <button type="button" class="btn btn-train" id="trainBtn" onclick="showPasswordModal()">
-                        <i class="fas fa-play me-2"></i>
-                        Start Training
-                    </button>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-train w-100" id="trainBtn" onclick="showPasswordModal()">
+                                <i class="fas fa-play me-2"></i>
+                                Start Training
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="/drift-report" target="_blank" class="btn btn-drift w-100">
+                                <i class="fas fa-chart-line me-2"></i> Drift Report
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-report w-100" onclick="toggleModelReport()">
+                                <i class="fas fa-chart-bar me-2"></i> Model Report
+                            </button>
+                        </div>
+                    </div>
                     <div class="progress-container" id="trainingProgress">
                         <div class="progress">
                             <div class="progress-bar" id="trainingProgressBar" style="width: 0%"></div>
                         </div>
                         <small class="text-muted mt-1 d-block" id="progressText">Initializing...</small>
                     </div>
-                    <a href="/drift-report" target="_blank" class="btn btn-drift">
-                        <i class="fas fa-chart-line me-2"></i> Drift Report
-                    </a>
+                </div>
+
+                <!-- Model Report Panel (Initially Hidden) -->
+                <div class="model-report-panel" id="modelReportPanel" style="display: none;">
+                    <div class="report-header text-center">
+                        <h4 class="mb-3">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Model Performance Report
+                        </h4>
+                        <button class="btn btn-refresh" onclick="loadModelReport()">
+                            <i class="fas fa-sync-alt me-2"></i>
+                            Refresh Report
+                        </button>
+                        <div class="mt-2">
+                            <small class="text-muted">Last Updated: <span id="lastUpdated">-</span></small>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="reportLoading" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Loading model report...</p>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="reportError" class="alert alert-danger" style="display: none;">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Failed to load model report</strong>
+                        <p class="mb-0 mt-2" id="reportErrorMessage">Unknown error occurred</p>
+                    </div>
+
+                    <!-- Report Content -->
+                    <div id="reportContent" style="display: none;">
+                        <!-- Model Health Status -->
+                        <div class="report-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-heartbeat me-2"></i>
+                                <a class="text-decoration-none" data-bs-toggle="collapse" href="#healthCollapse" role="button">
+                                    Model Health Status
+                                    <i class="fas fa-chevron-down ms-2"></i>
+                                </a>
+                            </h6>
+                            <div class="collapse" id="healthCollapse">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <div id="healthStatus" class="status-indicator">
+                                            <i class="fas fa-circle me-2"></i>
+                                            Status Loading...
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <small class="text-muted">
+                                            Model: <span id="modelExists" class="badge">-</span><br>
+                                            Loadable: <span id="modelLoadable" class="badge">-</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Metrics -->
+                        <div class="report-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-chart-bar me-2"></i>
+                                <a class="text-decoration-none" data-bs-toggle="collapse" href="#metricsCollapse" role="button">
+                                    Performance Metrics
+                                    <i class="fas fa-chevron-down ms-2"></i>
+                                </a>
+                            </h6>
+                            <div class="collapse" id="metricsCollapse">
+                                <div class="row" id="metricsContainer">
+                                    <!-- Metrics cards will be populated here -->
+                                </div>
+                                <div class="chart-container mt-3">
+                                    <canvas id="metricsChart" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Model Information -->
+                        <div class="report-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-sitemap me-2"></i>
+                                <a class="text-decoration-none" data-bs-toggle="collapse" href="#architectureCollapse" role="button">
+                                    Model Architecture
+                                    <i class="fas fa-chevron-down ms-2"></i>
+                                </a>
+                            </h6>
+                            <div class="collapse" id="architectureCollapse">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <table class="table table-sm info-table">
+                                            <tr>
+                                                <td><strong>Type:</strong></td>
+                                                <td id="modelType">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Preprocessing:</strong></td>
+                                                <td id="preprocessingType">-</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <table class="table table-sm info-table">
+                                            <tr>
+                                                <td><strong>CV Score:</strong></td>
+                                                <td id="cvScore">-</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Features:</strong></td>
+                                                <td id="totalFeatures">-</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+
+                        <!-- Features Used -->
+                        <div class="report-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-list me-2"></i>
+                                <a class="text-decoration-none" data-bs-toggle="collapse" href="#featuresCollapse" role="button">
+                                    Features Used
+                                    <i class="fas fa-chevron-down ms-2"></i>
+                                </a>
+                            </h6>
+                            <div class="collapse" id="featuresCollapse">
+                                <div id="featuresContainer" class="features-grid">
+                                    <!-- Feature badges will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Model Parameters (Collapsible) -->
+                        <div class="report-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-cogs me-2"></i>
+                                <a class="text-decoration-none" data-bs-toggle="collapse" href="#parametersCollapse" role="button">
+                                    Model Parameters
+                                    <i class="fas fa-chevron-down ms-2"></i>
+                                </a>
+                            </h6>
+                            <div class="collapse" id="parametersCollapse">
+                                <div class="parameters-container">
+                                    <table class="table table-striped table-sm" id="parametersTable">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 40%;">Parameter</th>
+                                                <th>Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="parametersTableBody">
+                                            <!-- Parameters will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Prediction Card -->
@@ -303,12 +478,246 @@
         let isTraining = false;
         let isPredicting = false;
         let passwordModal;
+        let metricsChart = null;
+        let isReportVisible = false;
 
         // Initialize modal
         document.addEventListener('DOMContentLoaded', function() {
             passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
             showToast('Welcome!', 'Fill out the form to get your visa prediction.', 'info');
         });
+
+        // Toggle Model Report Panel
+        function toggleModelReport() {
+            const panel = document.getElementById('modelReportPanel');
+            const btn = document.querySelector('.btn-report');
+            
+            if (!isReportVisible) {
+                panel.style.display = 'block';
+                btn.innerHTML = '<i class="fas fa-times me-2"></i> Close Report';
+                loadModelReport();
+                isReportVisible = true;
+            } else {
+                panel.style.display = 'none';
+                btn.innerHTML = '<i class="fas fa-chart-bar me-2"></i> Model Report';
+                isReportVisible = false;
+            }
+        }
+
+        // Load Model Report
+        async function loadModelReport() {
+            const loading = document.getElementById('reportLoading');
+            const error = document.getElementById('reportError');
+            const content = document.getElementById('reportContent');
+            
+            // Show loading, hide others
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            content.style.display = 'none';
+
+            try {
+                const response = await fetch('/model-report');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const reportData = await response.json();
+                displayReport(reportData);
+                
+                // Show content, hide loading
+                loading.style.display = 'none';
+                content.style.display = 'block';
+                updateTimestamp(reportData.timestamp);
+
+            } catch (err) {
+                console.error('Failed to load model report:', err);
+                
+                // Show error, hide loading
+                loading.style.display = 'none';
+                error.style.display = 'block';
+                document.getElementById('reportErrorMessage').textContent = err.message;
+                
+                showToast('Report Error', 'Failed to load model report: ' + err.message, 'danger');
+            }
+        }
+
+        function displayReport(data) {
+            updateHealthStatus(data.model_health);
+            updateMetrics(data.metrics);
+            updateModelInfo(data.model_info, data.training_info);
+            updateFeatures(data.features);
+        }
+
+        function updateHealthStatus(health) {
+            const statusElement = document.getElementById('healthStatus');
+            const modelExistsElement = document.getElementById('modelExists');
+            const modelLoadableElement = document.getElementById('modelLoadable');
+
+            if (health.status === 'healthy') {
+                statusElement.className = 'status-indicator status-healthy';
+                statusElement.innerHTML = '<i class="fas fa-check-circle me-2"></i>Healthy';
+                modelExistsElement.className = 'badge bg-success';
+                modelLoadableElement.className = 'badge bg-success';
+            } else {
+                statusElement.className = 'status-indicator status-unhealthy';
+                statusElement.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Unhealthy';
+                modelExistsElement.className = 'badge bg-danger';
+                modelLoadableElement.className = 'badge bg-danger';
+            }
+
+            modelExistsElement.textContent = health.model_exists ? 'Yes' : 'No';
+            modelLoadableElement.textContent = health.model_loadable ? 'Yes' : 'No';
+        }
+
+        function updateMetrics(metrics) {
+            const container = document.getElementById('metricsContainer');
+            container.innerHTML = '';
+
+            if (metrics.error) {
+                container.innerHTML = `<div class="col-12"><div class="alert alert-warning">${metrics.error}</div></div>`;
+                return;
+            }
+
+            const metricCards = [
+                { key: 'accuracy', label: 'Accuracy', color: '#28a745', icon: 'fas fa-bullseye' },
+                { key: 'f1_score', label: 'F1 Score', color: '#667eea', icon: 'fas fa-chart-line' },
+                { key: 'precision', label: 'Precision', color: '#17a2b8', icon: 'fas fa-crosshairs' },
+                { key: 'recall', label: 'Recall', color: '#ffc107', icon: 'fas fa-search' }
+            ];
+
+            metricCards.forEach(metric => {
+                if (metrics[metric.key] !== undefined) {
+                    const value = (metrics[metric.key] * 100).toFixed(1);
+                    container.innerHTML += `
+                        <div class="col-md-3 col-sm-6 mb-2">
+                            <div class="metric-mini-card" style="border-left: 4px solid ${metric.color};">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="metric-mini-value">${value}%</div>
+                                        <div class="metric-mini-label">${metric.label}</div>
+                                    </div>
+                                    <i class="${metric.icon}" style="color: ${metric.color}; font-size: 1.5rem;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            createMetricsChart(metrics);
+        }
+
+        function createMetricsChart(metrics) {
+            const ctx = document.getElementById('metricsChart').getContext('2d');
+            
+            if (metricsChart) {
+                metricsChart.destroy();
+            }
+
+            const labels = [];
+            const values = [];
+            const colors = ['#28a745', '#667eea', '#17a2b8', '#ffc107'];
+
+            if (metrics.accuracy !== undefined) {
+                labels.push('Accuracy');
+                values.push((metrics.accuracy * 100).toFixed(1));
+            }
+            if (metrics.f1_score !== undefined) {
+                labels.push('F1 Score');
+                values.push((metrics.f1_score * 100).toFixed(1));
+            }
+            if (metrics.precision !== undefined) {
+                labels.push('Precision');
+                values.push((metrics.precision * 100).toFixed(1));
+            }
+            if (metrics.recall !== undefined) {
+                labels.push('Recall');
+                values.push((metrics.recall * 100).toFixed(1));
+            }
+
+            metricsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Performance (%)',
+                        data: values,
+                        backgroundColor: colors.slice(0, values.length),
+                        borderColor: colors.slice(0, values.length),
+                        borderWidth: 2,
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: 'rgba(0,0,0,0.1)' }
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white'
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateModelInfo(modelInfo, trainingInfo) {
+            document.getElementById('modelType').textContent = modelInfo.model_type || '-';
+            document.getElementById('preprocessingType').textContent = modelInfo.preprocessing_type || '-';
+            document.getElementById('cvScore').textContent = trainingInfo.cross_validation_score 
+                ? (trainingInfo.cross_validation_score * 100).toFixed(2) + '%' : '-';
+
+            const tableBody = document.getElementById('parametersTableBody');
+            tableBody.innerHTML = '';
+
+            if (modelInfo.parameters && typeof modelInfo.parameters === 'object') {
+                Object.entries(modelInfo.parameters).forEach(([key, value]) => {
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td><strong>${key}</strong></td>
+                        <td><code>${JSON.stringify(value)}</code></td>
+                    `;
+                });
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="2" class="text-center text-muted">No parameters available</td></tr>';
+            }
+        }
+
+        function updateFeatures(features) {
+            const container = document.getElementById('featuresContainer');
+            document.getElementById('totalFeatures').textContent = features.total_features || '-';
+
+            if (features.error) {
+                container.innerHTML = `<div class="alert alert-warning">${features.error}</div>`;
+                return;
+            }
+
+            if (features.feature_names && Array.isArray(features.feature_names)) {
+                container.innerHTML = '';
+                features.feature_names.forEach((feature, index) => {
+                    container.innerHTML += `<span class="feature-badge">${feature}</span>`;
+                });
+            } else {
+                container.innerHTML = '<div class="text-muted">No feature information available</div>';
+            }
+        }
+
+        function updateTimestamp(timestamp) {
+            if (timestamp) {
+                const date = new Date(timestamp);
+                document.getElementById('lastUpdated').textContent = date.toLocaleString();
+            }
+        }
 
         // Show password modal
         function showPasswordModal() {

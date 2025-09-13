@@ -12,6 +12,11 @@ from us_visa_approval_prediction.logger import logging
 from us_visa_approval_prediction.exception import USvisaException
 
 
+
+from googleapiclient.http import MediaIoBaseDownload
+from io import BytesIO
+import os
+
 class GoogleDriveStorageService:
     """
     Google Drive Storage Service class to replace AWS S3 functionality
@@ -272,6 +277,51 @@ class GoogleDriveStorageService:
 
         except Exception as e:
             raise USvisaException(e, sys) from e
+
+
+    def download_file(self, file_name: str, local_path: str) -> str:
+        """
+        Download a file from Google Drive folder to a local path.
+
+        Args:
+            file_name (str): Name of the file in Drive
+            local_path (str): Where to save locally
+
+        Returns:
+            str: Absolute path to the downloaded file
+        """
+        try:
+            # Find file by name inside the folder
+            results = self.gdrive_service.files().list(
+                q=f"name='{file_name}' and '{self.folder_id}' in parents and trashed=false",
+                spaces="drive"
+            ).execute()
+            items = results.get("files", [])
+
+            if not items:
+                raise USvisaException(f"File '{file_name}' not found in Google Drive folder '{self.folder_name}'", sys)
+
+            file_id = items[0]["id"]
+
+            # Download contents
+            request = self.gdrive_service.files().get_media(fileId=file_id)
+            file_content = BytesIO()
+            downloader = MediaIoBaseDownload(file_content, request)
+
+            done = False
+            while not done:
+                status, done = downloader.next_chunk()
+
+            # Save to local path
+            file_content.seek(0)
+            with open(local_path, "wb") as f:
+                f.write(file_content.read())
+
+            return os.path.abspath(local_path)
+
+        except Exception as e:
+            raise USvisaException(f"Failed to download file '{file_name}': {e}", sys)
+
 
     def upload_df_as_csv(self, data_frame: DataFrame, local_filename: str, drive_filename: str, folder_name: str = None) -> None:
         """
